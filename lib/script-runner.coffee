@@ -3,6 +3,7 @@
 spawn = require('child_process').spawn
 fs = require('fs')
 url = require('url')
+shellwords = require('shellwords')
 
 ScriptRunnerView = require './script-runner-view'
 
@@ -79,7 +80,7 @@ class ScriptRunner
 
     args = if editor.getPath() then [editor.getPath()] else []
     cmd = fullCmd
-    splitCmd = cmd.split(/\s+/)
+    splitCmd = shellwords.split(fullCmd)
     if splitCmd.length > 1
       cmd = splitCmd[0]
       args = splitCmd.slice(1).concat(args)

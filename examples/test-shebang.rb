@@ -1,3 +1,3 @@
-#!/usr/bin/env FOO=BAR ruby
+#!/usr/bin/env FOO="Hello World" ruby
 
 puts ENV['FOO']
