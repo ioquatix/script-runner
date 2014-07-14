@@ -101,6 +101,11 @@ class AtomRunner
     @runnerView.footer('Running: ' + cmd + ' ' + editor.getPath())
 
   commandFor: (editor) ->
+    # try to extract from the shebang line
+    firstLine = editor.buffer.getLines()[0]
+    if firstLine.match('^#!')
+      return firstLine.substr(2)
+    
     # try to lookup by extension
     if editor.getPath()?
       for ext in Object.keys(@extensionMap).sort((a,b) -> b.length - a.length)
