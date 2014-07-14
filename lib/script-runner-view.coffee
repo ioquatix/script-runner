@@ -5,8 +5,9 @@ module.exports =
 class ScriptRunnerView extends ScrollView
   atom.deserializers.add(this)
 
-  @deserialize: ({title, output, footer}) ->
+  @deserialize: ({title, header, output, footer}) ->
     view = new ScriptRunnerView(title)
+    view._header.html(header)
     view._output.html(output)
     view._footer.html(footer)
     view
@@ -14,11 +15,14 @@ class ScriptRunnerView extends ScrollView
   @content: ->
     @div class: 'script-runner', =>
       @h1 'Script Runner'
+      @div class: 'header'
       @pre class: 'output'
       @div class: 'footer'
 
   constructor: (title) ->
     super
+    @convert = new Convert({escapeXML: true})
+    @_header = @find('.header')
     @_output = @find('.output')
     @_footer = @find('.footer')
     @setTitle(title)
@@ -26,6 +30,7 @@ class ScriptRunnerView extends ScrollView
   serialize: ->
     deserializer: 'ScriptRunnerView'
     title: @title
+    header: @_header.html()
     output: @_output.html()
     footer: @_footer.html()
 
@@ -38,6 +43,7 @@ class ScriptRunnerView extends ScrollView
 
   clear: ->
     @_output.html('')
+    @_header.html('')
     @_footer.html('')
 
   append: (text, className) ->
@@ -47,6 +53,9 @@ class ScriptRunnerView extends ScrollView
     span.innerHTML = new AnsiToHtml().toHtml(span.innerHTML)
     span.className = className || 'stdout'
     @_output.append(span)
+
+  header: (text) ->
+    @_header.html(text)
 
   footer: (text) ->
     @_footer.html(text)

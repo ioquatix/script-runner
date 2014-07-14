@@ -99,8 +99,10 @@ class ScriptRunner
     startTime = new Date
     unless editor.getPath()?
       @child.stdin.write(editor.getText())
+      @runnerView.header('Running: ' + cmd + ' ' + args.join(' ') + ' < $buffer')
+    else
+      @runnerView.header('Running: ' + cmd + ' ' + args.join(' '))
     @child.stdin.end()
-    @runnerView.footer('Running: ' + fullCmd + ' ' + editor.getPath())
 
   commandFor: (editor) ->
     # try to extract from the shebang line
