@@ -59,10 +59,10 @@ Note that the `.` extension prefix is ignored for extension listings.
 
 Released under the MIT license.
 
-Copyright, 2014, by Loren Segal.
-Copyright, 2014, by Ivan Storck.
-Copyright, 2014, by Alexandr Lukyanov.
-Copyright, 2014, by Robert Ahlberg.
+Copyright, 2014, by Loren Segal. 
+Copyright, 2014, by Ivan Storck. 
+Copyright, 2014, by Alexandr Lukyanov. 
+Copyright, 2014, by Robert Ahlberg. 
 Copyright, 2014, by Samuel G. D. Williams. <http://www.codeotaku.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
