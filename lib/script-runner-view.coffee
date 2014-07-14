@@ -13,7 +13,7 @@ class ScriptRunnerView extends ScrollView
 
   @content: ->
     @div class: 'script-runner', =>
-      @h1 'Atom Runner'
+      @h1 'Script Runner'
       @pre class: 'output'
       @div class: 'footer'
 
@@ -30,7 +30,7 @@ class ScriptRunnerView extends ScrollView
     footer: @_footer.html()
 
   getTitle: ->
-    "Atom Runner: #{@title}"
+    "Script Runner: #{@title}"
 
   setTitle: (title) ->
     @title = title
