@@ -73,7 +73,7 @@ class ScriptRunner
   runnerView: null
   pane: null
 
-  execute: (fullCmd, editor) ->
+  execute: (cmd, editor) ->
     # Stop any previous command?
     @stop()
     @runnerView.clear()
@@ -82,20 +82,18 @@ class ScriptRunner
     if editor.getPath()
       editor.save()
     
-    # Prepare the command and arguments for execution:
-    parts = shellwords.split(fullCmd)
-    cmd = parts[0]
-    args = parts.slice(1)
-    
     # If the editor refers to a buffer on disk which has not been modified, we can use it directly:
     if editor.getPath() and !editor.buffer.isModified()
-      args.push(editor.getPath())
+      cmd = cmd + ' ' + editor.getPath()
       appendBuffer = false
     else
       appendBuffer = true
     
+    # PTY emulation:
+    args = ["script", "-qfc", cmd, "/dev/null"]
+    
     # Spawn the child process:
-    @child = spawn(cmd, args, cwd: atom.project.path)
+    @child = spawn(args[0], args.slice(1), cwd: atom.project.path)
     @child.stderr.on 'data', (data) =>
       @runnerView.append(data, 'stderr')
       @runnerView.scrollToBottom()
@@ -112,9 +110,8 @@ class ScriptRunner
     # Could not supply file name:
     if appendBuffer
       @child.stdin.write(editor.getText())
-      @runnerView.header('Running: ' + cmd + ' ' + args.join(' ') + ' < $buffer')
-    else
-      @runnerView.header('Running: ' + cmd + ' ' + args.join(' '))
+    
+    @runnerView.header('Running: ' + cmd)
     @child.stdin.end()
 
   commandFor: (editor) ->

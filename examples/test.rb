@@ -1,7 +1,10 @@
-puts "foo"
+#!/usr/bin/env ruby
+require 'rainbow'
+
+puts Rainbow("foo").red
 puts "bar"
 puts "baz"
-$stdout.flush
 sleep 1
 puts "almost done"
-raise 'xx'
+
+raise '<a href="foobar">xxx</a>'
