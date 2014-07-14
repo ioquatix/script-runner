@@ -1,7 +1,7 @@
 {
   "name": "script-runner",
   "main": "./lib/script-runner",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Runs scripts inside of Atom.",
   "repository": "https://github.com/ioquatix/script-runner",
   "dependencies": {
