@@ -5,7 +5,7 @@
   "description": "Runs scripts inside of Atom.",
   "repository": "https://github.com/ioquatix/script-runner",
   "dependencies": {
-    "ansi-to-html": "0.1.x",
+    "ansi-to-html": "0.2.x",
     "shellwords": "0.1.x"
   },
   "license": "MIT"

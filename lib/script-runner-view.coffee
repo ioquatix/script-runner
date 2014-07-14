@@ -1,5 +1,5 @@
 {ScrollView} = require 'atom'
-AnsiToHtml = require 'ansi-to-html'
+Convert = require('ansi-to-html')
 
 module.exports =
 class ScriptRunnerView extends ScrollView
@@ -48,9 +48,7 @@ class ScriptRunnerView extends ScrollView
 
   append: (text, className) ->
     span = document.createElement('span')
-    node = document.createTextNode(text)
-    span.appendChild(node)
-    span.innerHTML = new AnsiToHtml().toHtml(span.innerHTML)
+    span.innerHTML = @convert.toHtml([text])
     span.className = className || 'stdout'
     @_output.append(span)
 
