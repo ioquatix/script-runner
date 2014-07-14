@@ -4,9 +4,9 @@ spawn = require('child_process').spawn
 fs = require('fs')
 url = require('url')
 
-AtomRunnerView = require './atom-runner-view'
+ScriptRunnerView = require './script-runner-view'
 
-class AtomRunner
+class ScriptRunner
   cfg:
     ext: 'runner.extensions'
     scope: 'runner.scopes'
@@ -53,8 +53,8 @@ class AtomRunner
       return
 
     previousPane = atom.workspaceView.getActivePaneView()
-    if not @runnerView? or atom.workspaceView.find('.atom-runner').size() == 0
-      @runnerView = new AtomRunnerView(editor.getTitle())
+    if not @runnerView? or atom.workspaceView.find('.script-runner').size() == 0
+      @runnerView = new ScriptRunnerView(editor.getTitle())
       panes = atom.workspaceView.getPaneViews()
       @pane = panes[panes.length - 1].splitRight(@runnerView)
 
@@ -118,4 +118,4 @@ class AtomRunner
       if scope.match('^source\\.' + name + '\\b')
         return @scopeMap[name]
 
-module.exports = new AtomRunner
+module.exports = new ScriptRunner

@@ -1,12 +1,12 @@
-# Atom Runner
+# Script Runner
 
 This package will run various script files inside of Atom.
 It currently supports JavaScript, CoffeeScript, Ruby, Python, and Go. You
 can add more.
 
-![Example](http://github.com/lsegal/atom-runner/raw/master/resources/screenshot-1.png)
+![Example](http://github.com/ioquatix/script-runner/raw/master/resources/screenshot-1.png)
 
-## Using
+## Usage
 
 * Hit Alt+R to launch the runner for the active window.
 * Hit Ctrl+C to kill a currently running process.
@@ -55,7 +55,31 @@ Similarly, in the extension map:
 
 Note that the `.` extension prefix is ignored for extension listings.
 
-## License & Copyright
+## License
 
-This package is Copyright (c) Loren Segal 2014 and is licensed under the MIT
-license.
+Released under the MIT license.
+
+Copyright, 2014, by Loren Segal.
+Copyright, 2014, by Ivan Storck.
+Copyright, 2014, by Alexandr Lukyanov.
+Copyright, 2014, by Robert Ahlberg.
+Copyright, 2014, by Samuel G. D. Williams. <http://www.codeotaku.com>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
