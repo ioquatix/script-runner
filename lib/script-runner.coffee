@@ -46,7 +46,6 @@ class ScriptRunner
     editor = atom.workspace.getActiveEditor()
     return unless editor?
 
-    editor.save()
     path = editor.getPath()
     cmd = @commandFor(editor)
     unless cmd?
@@ -75,15 +74,27 @@ class ScriptRunner
   pane: null
 
   execute: (fullCmd, editor) ->
+    # Stop any previous command?
     @stop()
     @runnerView.clear()
 
-    args = if editor.getPath() then [editor.getPath()] else []
-    cmd = fullCmd
-    splitCmd = shellwords.split(fullCmd)
-    if splitCmd.length > 1
-      cmd = splitCmd[0]
-      args = splitCmd.slice(1).concat(args)
+    # Save the file if it has been modified:
+    if editor.getPath()
+      editor.save()
+    
+    # Prepare the command and arguments for execution:
+    parts = shellwords.split(fullCmd)
+    cmd = parts[0]
+    args = parts.slice(1)
+    
+    # If the editor refers to a buffer on disk which has not been modified, we can use it directly:
+    if editor.getPath() and !editor.buffer.isModified()
+      args.push(editor.getPath())
+      appendBuffer = false
+    else
+      appendBuffer = true
+    
+    # Spawn the child process:
     @child = spawn(cmd, args, cwd: atom.project.path)
     @child.stderr.on 'data', (data) =>
       @runnerView.append(data, 'stderr')
@@ -92,12 +103,14 @@ class ScriptRunner
       @runnerView.append(data, 'stdout')
       @runnerView.scrollToBottom()
     @child.on 'close', (code, signal) =>
-      @runnerView.footer('Exited with code=' + code + ' in ' +
+      @runnerView.footer('Exited with status ' + code + ' in ' +
         ((new Date - startTime) / 1000) + ' seconds')
       @child = null
 
     startTime = new Date
-    unless editor.getPath()?
+    
+    # Could not supply file name:
+    if appendBuffer
       @child.stdin.write(editor.getText())
       @runnerView.header('Running: ' + cmd + ' ' + args.join(' ') + ' < $buffer')
     else
