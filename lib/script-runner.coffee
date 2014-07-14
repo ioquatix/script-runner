@@ -73,11 +73,12 @@ class ScriptRunner
   runnerView: null
   pane: null
 
-  execute: (cmd, editor) ->
+  execute: (fullCmd, editor) ->
     @stop()
     @runnerView.clear()
 
     args = if editor.getPath() then [editor.getPath()] else []
+    cmd = fullCmd
     splitCmd = cmd.split(/\s+/)
     if splitCmd.length > 1
       cmd = splitCmd[0]
@@ -98,7 +99,7 @@ class ScriptRunner
     unless editor.getPath()?
       @child.stdin.write(editor.getText())
     @child.stdin.end()
-    @runnerView.footer('Running: ' + cmd + ' ' + editor.getPath())
+    @runnerView.footer('Running: ' + fullCmd + ' ' + editor.getPath())
 
   commandFor: (editor) ->
     # try to extract from the shebang line
