@@ -14,6 +14,8 @@ This package is a fork of the popular `atom-runner` but with many PRs merged and
 
 N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](https://github.com/ioquatix/script-runner/issues/1).
 
+Scripts which have been saved run in their directory, unsaved scripts run in the workspace root directory.
+
 ### Pseudo TTY Emulation
 
 Most interpreters output to `stdout` and `stderr`, however the buffering mechanisms are often different when the process is not running on a PTY. For example, Ruby buffers `stdout` when not attached to a terminal which causes incorrect order of output when writing to both `stdout` and `stderr`. Additionally, most programs won't output control codes used for colouring the output when not running on a terminal. `script-runner` uses the `script` command to emulate a terminal and generally gives the best output.

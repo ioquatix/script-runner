@@ -1,10 +1,6 @@
 {ConfigObserver} = require 'atom'
 
-spawn = require('child_process').spawn
-fs = require('fs')
-url = require('url')
-shellwords = require('shellwords')
-
+ScriptRunnerProcess = require './script-runner-process'
 ScriptRunnerView = require './script-runner-view'
 
 class ScriptRunner
@@ -31,6 +27,7 @@ class ScriptRunner
   destroy: ->
     atom.config.unobserve @cfg.ext
     atom.config.unobserve @cfg.scope
+    @killAllProcesses()
 
   activate: ->
     @runnerView = null
@@ -43,77 +40,48 @@ class ScriptRunner
     atom.workspaceView.command 'runner:run', => @run()
     atom.workspaceView.command 'runner:stop', => @stop()
 
+  killAllProcesses: ->
+    if @process?
+      # Don't render into the view
+      @process.detach()
+      @process.stop('SIGTERM')
+
+  createRunnerView: (editor) ->
+    scriptRunners = atom.workspaceView.find('.script-runner')
+    
+    scriptRunners.remove();
+    
+    @runnerView = new ScriptRunnerView(editor.getTitle())
+    panes = atom.workspaceView.getPaneViews()
+    @pane = panes[panes.length - 1].splitRight(@runnerView)
+
   run: ->
+    @killAllProcesses()
+    
     editor = atom.workspace.getActiveEditor()
     return unless editor?
-
+    
+    @createRunnerView(editor)
+    
     path = editor.getPath()
     cmd = @commandFor(editor)
     unless cmd?
       console.warn("No registered executable for file '#{path}'")
       return
 
-    previousPane = atom.workspaceView.getActivePaneView()
-    if not @runnerView? or atom.workspaceView.find('.script-runner').size() == 0
-      @runnerView = new ScriptRunnerView(editor.getTitle())
-      panes = atom.workspaceView.getPaneViews()
-      @pane = panes[panes.length - 1].splitRight(@runnerView)
-
     @runnerView.setTitle(editor.getTitle())
     if @pane and @pane.isOnDom()
       @pane.activateItem(@runnerView)
-    @execute(cmd, editor)
+    
+    @runnerView.clear()
+    # In the future it may be useful to support multiple runner views:
+    @process = ScriptRunnerProcess.run(@runnerView, cmd, editor)
 
-  stop: ->
-    if @child
-      @child.kill()
-      @child = null
-      if @runnerView
-        @runnerView.append('^C', 'stdin')
+  stop: (signal = 'SIGINT') ->
+    @killAllProcesses(signal)
 
   runnerView: null
   pane: null
-
-  execute: (cmd, editor) ->
-    # Stop any previous command?
-    @stop()
-    @runnerView.clear()
-
-    # Save the file if it has been modified:
-    if editor.getPath()
-      editor.save()
-    
-    # If the editor refers to a buffer on disk which has not been modified, we can use it directly:
-    if editor.getPath() and !editor.buffer.isModified()
-      cmd = cmd + ' ' + editor.getPath()
-      appendBuffer = false
-    else
-      appendBuffer = true
-    
-    # PTY emulation:
-    args = ["script", "-qfc", cmd, "/dev/null"]
-    
-    # Spawn the child process:
-    @child = spawn(args[0], args.slice(1), cwd: atom.project.path)
-    @child.stderr.on 'data', (data) =>
-      @runnerView.append(data, 'stderr')
-      @runnerView.scrollToBottom()
-    @child.stdout.on 'data', (data) =>
-      @runnerView.append(data, 'stdout')
-      @runnerView.scrollToBottom()
-    @child.on 'close', (code, signal) =>
-      @runnerView.footer('Exited with status ' + code + ' in ' +
-        ((new Date - startTime) / 1000) + ' seconds')
-      @child = null
-
-    startTime = new Date
-    
-    # Could not supply file name:
-    if appendBuffer
-      @child.stdin.write(editor.getText())
-    
-    @runnerView.header('Running: ' + cmd)
-    @child.stdin.end()
 
   commandFor: (editor) ->
     # try to extract from the shebang line

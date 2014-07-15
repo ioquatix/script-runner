@@ -1,10 +1,28 @@
 #!/usr/bin/env ruby
-require 'rainbow'
 
-puts Rainbow("foo").red
-puts "bar"
-puts "baz"
-sleep 1
-puts "almost done"
+require 'set'
 
-raise '<a href="foobar">xxx</a>'
+pid = ARGV[0] || $$
+
+data = File.read("/proc/#{pid}/status")
+
+signals = {}
+
+Signal.list.each do |signal, index|
+	signals[index] = signal
+end
+
+ignored = Set.new
+
+data.scan(/SigIgn:\s*(.*?)\n/) do |(mask)|
+	flags = mask.to_i(16).to_s(2).split(//).reverse
+	
+	flags.each_with_index do |flag, index|
+		#puts "Checking flag #{flag} for #{index}: #{signals[index+1]}"
+		if flag == '1'
+			ignored << signals[index+1]
+		end
+	end
+end
+
+puts "Ignored: #{ignored.to_a.join(', ')}"
