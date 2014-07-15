@@ -52,14 +52,6 @@ class ScriptRunnerProcess
     # Spawn the child process:
     @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, detached: true)
     
-    #@child = ChildProcess.fork(__dirname + '/script-runner-worker.coffee', silent: true, detach: true)
-    
-    #@child.send({
-    #  action: 'run',
-    #  cmd: cmd,
-    #  cwd: cwd
-    #})
-    
     # Handle various events relating to the child process:
     @child.stderr.on 'data', (data) =>
       if @view?
