@@ -14,5 +14,5 @@ process.on 'message', (msg) ->
     
     term.on 'data', (data) -> process.stdout.write(data)
     
-    #process.on 'SIGCHLD', ->
-    #  process.exit(0)
+    process.on 'SIGCHLD', ->
+      process.exit(0)
