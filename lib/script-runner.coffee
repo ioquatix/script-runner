@@ -56,19 +56,18 @@ class ScriptRunner
     @pane = panes[panes.length - 1].splitRight(@runnerView)
 
   run: ->
-    @killAllProcesses()
-    
     editor = atom.workspace.getActiveEditor()
     return unless editor?
-    
-    @createRunnerView(editor)
     
     path = editor.getPath()
     cmd = @commandFor(editor)
     unless cmd?
-      console.warn("No registered executable for file '#{path}'")
+      alert("No registered executable for file '#{path}'")
       return
-
+    
+    @killAllProcesses()
+    @createRunnerView(editor)
+    
     @runnerView.setTitle(editor.getTitle())
     if @pane and @pane.isOnDom()
       @pane.activateItem(@runnerView)
