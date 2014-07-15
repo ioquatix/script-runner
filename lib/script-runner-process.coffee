@@ -20,7 +20,7 @@ class ScriptRunnerProcess
   
   stop: (signal = 'SIGINT') ->
     if @child
-      #console.log("Sending", signal, "to child", @child, "pid", @child.pid)
+      console.log("Sending", signal, "to child", @child, "pid", @child.pid)
       process.kill(-@child.pid, signal)
       if @view
         @view.append('<Sending ' + signal + '>', 'stdin')
@@ -52,6 +52,14 @@ class ScriptRunnerProcess
     # Spawn the child process:
     @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, detached: true)
     
+    #@child = ChildProcess.fork(__dirname + '/script-runner-worker.coffee', silent: true, detach: true)
+    
+    #@child.send({
+    #  action: 'run',
+    #  cmd: cmd,
+    #  cwd: cwd
+    #})
+    
     # Handle various events relating to the child process:
     @child.stderr.on 'data', (data) =>
       if @view?
@@ -63,7 +71,7 @@ class ScriptRunnerProcess
         @view.append(data, 'stdout')
         @view.scrollToBottom()
     
-    @child.on 'exit', (code, signal) =>
+    @child.on 'close', (code, signal) =>
       #console.log("process", args, "exit", code, signal)
       @child = null
       if @view
