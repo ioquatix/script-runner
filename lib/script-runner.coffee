@@ -27,7 +27,7 @@ class ScriptRunner
   destroy: ->
     atom.config.unobserve @cfg.ext
     atom.config.unobserve @cfg.scope
-    @killAllProcesses()
+    @killProcess()
 
   activate: ->
     @runnerView = null
@@ -40,20 +40,29 @@ class ScriptRunner
     atom.workspaceView.command 'runner:run', => @run()
     atom.workspaceView.command 'runner:stop', => @stop()
 
-  killAllProcesses: ->
+  killProcess: (detach = false)->
     if @process?
-      # Don't render into the view
-      @process.detach()
       @process.stop('SIGTERM')
+      if detach
+        # Don't render into the view any more:
+        @process.detach()
+        @process = null
 
   createRunnerView: (editor) ->
-    scriptRunners = atom.workspaceView.find('.script-runner')
+    scriptRunners = []
     
-    scriptRunners.remove();
+    # Find all existing ScriptRunnerView instances:
+    for pane in atom.workspace.getPanes()
+      for item in pane.items
+        scriptRunners.push({pane: pane, view: item}) if item instanceof ScriptRunnerView
     
-    @runnerView = new ScriptRunnerView(editor.getTitle())
-    panes = atom.workspaceView.getPaneViews()
-    @pane = panes[panes.length - 1].splitRight(@runnerView)
+    if scriptRunners.length == 0
+      @runnerView = new ScriptRunnerView(editor.getTitle())
+      panes = atom.workspace.getPanes()
+      @pane = panes[panes.length - 1].splitRight(items: [@runnerView])
+    else
+      @runnerView = scriptRunners[0].view
+      @pane = scriptRunners[0].pane
 
   run: ->
     editor = atom.workspace.getActiveEditor()
@@ -65,19 +74,18 @@ class ScriptRunner
       alert("Not sure how to run '#{path}' :/")
       return false
     
-    @killAllProcesses()
+    @killProcess(true)
     @createRunnerView(editor)
     
     @runnerView.setTitle(editor.getTitle())
-    if @pane and @pane.isOnDom()
-      @pane.activateItem(@runnerView)
+    @pane.activateItem(@runnerView)
     
     @runnerView.clear()
     # In the future it may be useful to support multiple runner views:
     @process = ScriptRunnerProcess.run(@runnerView, cmd, editor)
 
-  stop: (signal = 'SIGINT') ->
-    @killAllProcesses(signal)
+  stop: ->
+    @killProcess()
 
   runnerView: null
   pane: null

@@ -10,7 +10,7 @@ class ScriptRunnerView extends ScrollView
     view._header.html(header)
     view._output.html(output)
     view._footer.html(footer)
-    view
+    return view
 
   @content: ->
     @div class: 'script-runner', =>
