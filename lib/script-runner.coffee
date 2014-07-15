@@ -14,15 +14,16 @@ class ScriptRunner
 
   defaultExtensionMap:
     'spec.coffee': 'jasmine-node --coffee',
-    'sh' : 'bash -c'
+    'sh' : 'bash'
 
   defaultScopeMap:
-    coffee: 'coffee'
-    js: 'node'
-    ruby: 'ruby'
-    python: 'python'
-    go: 'go run'
-    'Shell Script (Bash)': 'bash -c'
+    '^source.coffee': 'coffee'
+    '^source.js': 'node'
+    '^source.ruby': 'ruby'
+    '^source.python': 'python'
+    '^source.go': 'go run'
+    '^text.html.php': 'php'
+    'Shell Script (Bash)': 'bash'
 
   extensionMap: null
   scopeMap: null
@@ -118,18 +119,23 @@ class ScriptRunner
     # try to extract from the shebang line
     firstLine = editor.buffer.getLines()[0]
     if firstLine.match('^#!')
+      #console.log("firstLine", firstLine)
       return firstLine.substr(2)
     
     # try to lookup by extension
     if editor.getPath()?
       for ext in Object.keys(@extensionMap).sort((a,b) -> b.length - a.length)
+        #console.log("Matching extension", ext)
         if editor.getPath().match('\\.' + ext + '$')
+          #console.log("Matched extension", ext)
           return @extensionMap[ext]
 
     # lookup by grammar
     scope = editor.getCursorScopes()[0]
-    for name in Object.keys(@scopeMap)
-      if scope.match('^source\\.' + name + '\\b')
-        return @scopeMap[name]
+    for pattern in Object.keys(@scopeMap)
+      #console.log("Matching scope", name, "with", scope)
+      if scope.match(pattern)
+        #console.log("Matched scope", name, "with", pattern)
+        return @scopeMap[pattern]
 
 module.exports = new ScriptRunner
