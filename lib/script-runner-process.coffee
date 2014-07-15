@@ -64,11 +64,13 @@ class ScriptRunnerProcess
       @child = null
       if @view
         duration = ' after ' + ((new Date - startTime) / 1000) + ' seconds'
-        if code
-          @view.footer('Exited with status ' + code + duration)
+        if signal
+          @view.footer('Exited with signal ' + signal + duration)
         else
-          @view.footer('Interupted with signal ' + signal + duration)
-
+          # Sometimes code seems to be null too, not sure why, perhaps a bug in node.
+          code ||= 0
+          @view.footer('Exited with status ' + code + duration)
+    
     startTime = new Date
     
     # Could not supply file name:
