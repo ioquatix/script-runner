@@ -8,7 +8,7 @@ trap 'echo "Hello World"; exit 0' INT
 
 ruby ./test.rb
 
-kill -SIGINT $$
+kill -SIGTERM $$
 
 echo "Hello World"
 
