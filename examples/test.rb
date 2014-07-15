@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'set'
+require 'rainbow'
 
 pid = ARGV[0] || $$
 
@@ -25,4 +26,4 @@ data.scan(/SigIgn:\s*(.*?)\n/) do |(mask)|
 	end
 end
 
-puts "Ignored: #{ignored.to_a.join(', ')}"
+puts Rainbow("Ignored: #{ignored.to_a.join(', ')}").red
