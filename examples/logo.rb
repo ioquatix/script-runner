@@ -27,9 +27,5 @@ end
 
 logo.each_char.with_index do |c, i|
 	$stdout.write Rainbow(c).color(*unikitty(i % 55))
+	sleep 0.01
 end
-
-$stdout.flush
-$stderr.flush
-
-sleep 0.1
