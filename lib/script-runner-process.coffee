@@ -22,8 +22,8 @@ class ScriptRunnerProcess
     if @child
       #console.log("Sending", signal, "to child", @child, "pid", @child.pid)
       process.kill(-@child.pid, signal)
-      if @view and signal == 'SIGINT'
-        @view.append('^C', 'stdin')
+      if @view
+        @view.append('<Sending ' + signal + '>', 'stdin')
   
   execute: (cmd, editor) ->
     cwd = atom.project.path
