@@ -62,8 +62,8 @@ class ScriptRunner
     path = editor.getPath()
     cmd = @commandFor(editor)
     unless cmd?
-      alert("No registered executable for file '#{path}'")
-      return
+      alert("Not sure how to run '#{path}' :/")
+      return false
     
     @killAllProcesses()
     @createRunnerView(editor)
