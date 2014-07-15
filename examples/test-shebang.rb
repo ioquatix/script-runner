@@ -4,4 +4,6 @@ puts ENV['FOO']
 
 puts Process.getsid
 
-# Process.kill('SIGKILL', -(Process.getpgrp - 2))
+sleep 5
+
+Process.kill('SIGKILL', 0)
