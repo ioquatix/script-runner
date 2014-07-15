@@ -1,5 +1,6 @@
 ChildProcess = require('child_process')
 Path = require('path')
+Shellwords = require('shellwords')
 
 module.exports =
 class ScriptRunnerProcess
@@ -41,7 +42,10 @@ class ScriptRunnerProcess
       appendBuffer = true
     
     # PTY emulation:
+    #args = Shellwords.split(cmd)
+    #args.unshift('unbuffer')
     args = ["script", "-qfec", cmd, "/dev/null"]
+    #args = ["bash", "-c", cmd]
     
     #console.log("args", args, "cwd", cwd, process.pid)
     
