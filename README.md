@@ -4,7 +4,9 @@ This package will run various script files inside of Atom. It currently supports
 
 ![Example](https://github.com/ioquatix/script-runner/raw/master/resources/screenshot-1.png)
 
-This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`), environment variables (via `/usr/bin/env`) and proper (currently non-interactive) terminal emulation. Many thanks to Loren Segal and all the contributing developers.
+This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`) and proper (currently non-interactive) terminal emulation. Many thanks to Loren Segal and all the contributing developers.
+
+**If you are on Mac OS X and want `rvm` or `virtualenv` to work, follow the instructions in Environment Variables below.**
 
 ## Usage
 
@@ -34,57 +36,30 @@ Even for unsaved files without an associated grammar, as long as you have the co
 
 ### Environment Variables
 
-The default process takes environment variables from the shell it was launched from. This might be an issue if launching Atom directly from the desktop environment when using, say, RVM. You can additionally specify variables using the shebang line, e.g.
+The default Atom process takes environment variables from the shell it was launched from. This might be an issue if launching Atom directly from the desktop environment when using, say, RVM. This is particularly an issue on Mac OS X.
 
-```ruby
-#!/usr/bin/env PATH=~/.rvm/bin:$PATH ruby
+To work around this, simply open `~/.atom/init.coffee` (`Atom` → `Open Init Script`) and insert the following:
+
+```coffeescript
+path = require 'path'
+
+search_paths = [process.env.PATH]
+home = process.env.HOME
+
+# Make RVM wrappers available to all processes:
+search_paths.unshift(home + "/.rvm/bin")
+
+# Make a specific version of ruby the default (e.g. from `rvm which ruby`):
+search_paths.unshift(home + "/.rvm/rubies/ruby-2.1.2/bin")
+
+# Python virtualenv too:
+search_paths.unshift(home + "/.virtualenvs/python4.2/bin")
+
+# Update the path environment variable:
+process.env.PATH = search_paths.join(path.delimiter)
 ```
 
-You can specify any environment variables you may like this way, per script.
-
-### Configuring
-
-This package uses the following default configuration:
-
-```cson
-'runner':
-  'scopes':
-    'coffee': 'coffee'
-    'js': 'node'
-    'ruby': 'ruby'
-    'python': 'python'
-    'go': 'go run'
-  'extensions':
-    'spec.coffee': 'jasmine-node --coffee'
-```
-
-You can add more commands for a given language scope, or add commands by
-extension instead (if multiple extensions use the same syntax). Extensions
-are searched before scopes (syntaxes).
-
-To do so, add the configuration to `~/.atom/config.cson` in the format provided
-above.
-
-The mapping is `SCOPE|EXT => EXECUTABLE`, so to run JavaScript files through
-phantom, you would do:
-
-```cson
-'runner':
-  'scopes':
-    'js': 'phantom'
-```
-
-Note that the `source.` prefix is ignored for syntax scope listings.
-
-Similarly, in the extension map:
-
-```cson
-'runner':
-  'extensions':
-    'js': 'phantom'
-```
-
-Note that the `.` extension prefix is ignored for extension listings.
+You should customize this for your exact requirements.
 
 ## Contributing
 
@@ -93,12 +68,6 @@ Note that the `.` extension prefix is ignored for extension listings.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-### Desired Features
-
-* Support for more features of DNS such as zone transfer.
-* Support reverse records more easily.
-* Some kind of system level integration, e.g. registering a DNS server with the currently running system resolver.
 
 ## License
 

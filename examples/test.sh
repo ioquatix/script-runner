@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo PATH: $PATH
 echo PID: $$
 
 trap '' INT

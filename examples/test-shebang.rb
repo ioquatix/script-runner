@@ -1,5 +1,6 @@
-#!/usr/bin/env FOO="Hello World" ruby
+#!/usr/bin/env ruby
 
+puts ENV['PATH']
 puts ENV['FOO']
 
 puts Process.getsid
