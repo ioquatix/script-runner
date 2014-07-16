@@ -11,10 +11,10 @@
   'cmd-shift-r': 'run:script'
 
 '.platform-darwin .workspace':
-  'ctrl-c': 'run:terminate'
+  'ctrl-shift-c': 'run:terminate'
 
 '.platform-linux .workspace .editor':
   'ctrl-shift-x': 'run:script'
 
 '.platform-linux .workspace':
-  'ctrl-c': 'run:terminate'
+  'ctrl-shift-c': 'run:terminate'
