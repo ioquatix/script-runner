@@ -2,8 +2,4 @@
 
 export
 
-which ruby
-
-ruby --version
-
-rvm-auto-ruby --version
+$SHELL -lc 'echo $PATH'
