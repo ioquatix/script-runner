@@ -1,7 +1,6 @@
 # Script Runner
 
-This package will run various script files inside of Atom.
-It currently supports JavaScript, CoffeeScript, Ruby, Python, Bash, Go and anything with a shebang line.
+This package will run various script files inside of Atom. It currently supports JavaScript, CoffeeScript, Ruby, Python, Bash, Go and anything with a shebang line.
 
 ![Example](https://github.com/ioquatix/script-runner/raw/master/resources/screenshot-1.png)
 
@@ -9,10 +8,10 @@ This package is a fork of the popular `atom-runner` but with many PRs merged and
 
 ## Usage
 
+N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](https://github.com/ioquatix/script-runner/issues/1). The documentation here isn't correct.
+
 * Hit Alt+R to launch the runner for the active window.
 * Hit Ctrl+C to kill a currently running process.
-
-N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](https://github.com/ioquatix/script-runner/issues/1).
 
 Scripts which have been saved run in their directory, unsaved scripts run in the workspace root directory.
 
@@ -43,7 +42,7 @@ The default process takes environment variables from the shell it was launched f
 
 You can specify any environment variables you may like this way, per script.
 
-## Configuring
+### Configuring
 
 This package uses the following default configuration:
 
@@ -86,3 +85,21 @@ Similarly, in the extension map:
 ```
 
 Note that the `.` extension prefix is ignored for extension listings.
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+
+### Desired Features
+
+* Support for more features of DNS such as zone transfer.
+* Support reverse records more easily.
+* Some kind of system level integration, e.g. registering a DNS server with the currently running system resolver.
+
+## License
+
+Released under the MIT license. Please see `LICENSE.md` for the full license.
