@@ -53,9 +53,14 @@ class ScriptWrapper:
 			if rlist:
 				try:
 					data = os.read(self.master, 1024)
+					
+					# Mac OS X:
+					if len(data) == 0:
+						break
+					
 					write_all(STDOUT_FILENO, data)
 				except OSError:
-					# Process terminated, all input consumed:
+					# Linux, all data consumed:
 					break
 		
 		# Process status not reaped yet, all input was consumed:
