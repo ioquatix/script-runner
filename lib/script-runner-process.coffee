@@ -38,7 +38,6 @@ class ScriptRunnerProcess
       cmd = cmd + ' ' + editor.getPath()
       appendBuffer = false
     else
-      cmd = cmd + ' ' + '/dev/stdin'
       appendBuffer = true
     
     # PTY emulation:
@@ -76,6 +75,7 @@ class ScriptRunnerProcess
     # Could not supply file name:
     if appendBuffer
       @child.stdin.write(editor.getText())
-      @child.stdin.end()
+    
+    @child.stdin.end()
     
     @view.header('Running: ' + cmd + ' (pgid ' + @child.pid + ')')

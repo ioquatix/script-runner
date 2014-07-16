@@ -19,21 +19,60 @@ best option. This script should be Python2.7/3.3 compatible (with a few minor
 exceptions which are delt with below).
 """
 
-import sys, pty, tty, signal, os;
+import sys, pty, os, subprocess
+from select import select
 
-signal.signal(signal.SIGINT, signal.SIG_DFL)
+STDIN_FILENO = 0
+STDOUT_FILENO = 1
+STDERR_FILENO = 2
 
-status = pty.spawn(sys.argv[1:])
+# signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-# Some versions of python don't return the exit status (e.g. 2.x)
-if status == None:
-	status = os.wait()[1]
+def debug(msg):
+	sys.stderr.write(msg)
+	sys.stderr.flush()
 
-exit_code = os.WEXITSTATUS(status)
-exit_signal = os.WTERMSIG(status)
+def write_all(fd, data):
+	"""Write all the data to a descriptor."""
+	while data:
+		n = os.write(fd, data)
+		data = data[n:]
+
+class ScriptWrapper:
+	def __init__(self, command = sys.argv[1:]):
+		self.master, slave = pty.openpty()
+		self.child = subprocess.Popen(command, stdout=slave, stderr=slave, close_fds=True)
+		os.close(slave)
+
+	def wait_for_completion(self):
+		status = None
+		running = -1
+		
+		while running != 0:
+			if self.child.poll():
+				running = 10
+			
+			rlist, wlist, xlist = select([self.master], [], [self.master], 0.1)
+			
+			if rlist:
+				try:
+					data = os.read(self.master, 1024)
+					write_all(STDOUT_FILENO, data)
+				except OSError:
+					# Process terminated, all input consumed:
+					break
+			
+			if running > 0:
+				running -= 1
+		
+		# Process status not reaped yet, all input was consumed:
+		return self.child.wait()
+
+wrapper = ScriptWrapper()
+status = wrapper.wait_for_completion()
 
 # Cause the wrapper process to die in the same way, so that the status is propagated upstream:
-if exit_signal != 0:
-	os.kill(os.getpid(), exit_signal)
+if status < 0:
+	os.kill(os.getpid(), -status)
 else:
-	sys.exit(exit_code)
+	sys.exit(status)
