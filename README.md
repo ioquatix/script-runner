@@ -1,7 +1,7 @@
 # Script Runner
 
 This package will run various script files inside of Atom.
-It currently supports JavaScript, CoffeeScript, Ruby, Python, Bash, and Go. You can add more.
+It currently supports JavaScript, CoffeeScript, Ruby, Python, Bash, Go and anything with a shebang line.
 
 ![Example](https://github.com/ioquatix/script-runner/raw/master/resources/screenshot-1.png)
 
@@ -22,12 +22,14 @@ Most interpreters output to `stdout` and `stderr`, however the buffering mechani
 
 ### Shebang Lines
 
-In a typical unix environment, the shebang line specifies the interpreter to use for the script:
+In a typical UNIX environment, the shebang line specifies the interpreter to use for the script:
 
 ```ruby
 #!/usr/bin/env ruby
 puts "Hello World"
 ```
+
+The shebang line is the preferred way to specify how to run something as it naturally supports all the intricacies of your underlying setup, e.g. Ruby's `rvm`, Python's `virtualenv`.
 
 Even for unsaved files without an associated grammar, as long as you have the correct shebang line it will be executed correctly.
 
