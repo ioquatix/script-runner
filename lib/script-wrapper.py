@@ -46,13 +46,9 @@ class ScriptWrapper:
 
 	def wait_for_completion(self):
 		status = None
-		running = -1
 		
-		while running != 0:
-			if self.child.poll():
-				running = 10
-			
-			rlist, wlist, xlist = select([self.master], [], [self.master], 0.1)
+		while True:
+			rlist, wlist, xlist = select([self.master], [], [])
 			
 			if rlist:
 				try:
@@ -61,9 +57,6 @@ class ScriptWrapper:
 				except OSError:
 					# Process terminated, all input consumed:
 					break
-			
-			if running > 0:
-				running -= 1
 		
 		# Process status not reaped yet, all input was consumed:
 		return self.child.wait()
