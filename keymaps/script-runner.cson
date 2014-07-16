@@ -8,13 +8,13 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.platform-darwin .workspace .editor':
-  'cmd-shift-r': 'runner:run'
+  'cmd-shift-r': 'run:script'
 
 '.platform-darwin .workspace':
-  'ctrl-c': 'runner:stop'
+  'ctrl-c': 'run:terminate'
 
 '.platform-linux .workspace .editor':
-  'ctrl-shift-x': 'runner:run'
+  'ctrl-shift-x': 'run:script'
 
 '.platform-linux .workspace':
-  'ctrl-shift-z': 'runner:stop'
+  'ctrl-c': 'run:terminate'

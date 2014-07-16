@@ -10,10 +10,12 @@ This package is a fork of the popular `atom-runner` but with many PRs merged and
 
 ## Usage
 
-N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](https://github.com/ioquatix/script-runner/issues/1). The documentation here isn't correct.
+N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](https://github.com/ioquatix/script-runner/issues/1).
 
-* Hit Alt+R to launch the runner for the active window.
-* Hit Ctrl+C to kill a currently running process.
+| Command              | Mac OS X                            | Linux/Windows               |
+|----------------------|-------------------------------------|-----------------------------|
+| Run: Script          | <kbd>cmd-r</kbd>                    | <kbd>ctrl-shift-x</kbd>     |
+| Run: Terminate       | <kbd>ctrl-c</kbd>                   | <kbd>ctrl-c</kbd>           |
 
 Scripts which have been saved run in their directory, unsaved scripts run in the workspace root directory.
 

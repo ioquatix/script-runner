@@ -37,8 +37,8 @@ class ScriptRunner
       @extensionMap = atom.config.get(@cfg.ext)
     atom.config.observe @cfg.scope, =>
       @scopeMap = atom.config.get(@cfg.scope)
-    atom.workspaceView.command 'runner:run', => @run()
-    atom.workspaceView.command 'runner:stop', => @stop()
+    atom.workspaceView.command 'run:script', => @run()
+    atom.workspaceView.command 'run:terminate', => @stop()
 
   killProcess: (detach = false)->
     if @process?
