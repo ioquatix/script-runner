@@ -17,9 +17,9 @@ logo = <<EOF
 ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
 EOF
 
-def unikitty(i, frequency = 0.4)
+def unikitty(i, frequency = 0.1)
 	red = Math.sin(frequency*i + 0) * 127 + 128
-	green = Math.sin(frequency*i + 2) * 127 + 128
+	green = Math.sin(frequency*i + 2) * 100 + 128
 	blue  = Math.sin(frequency*i + 4) * 127 + 128
 	
 	return [red, green, blue]
@@ -27,5 +27,5 @@ end
 
 logo.each_char.with_index do |c, i|
 	$stdout.write Rainbow(c).color(*unikitty(i % 55))
-	sleep 0.01
+	sleep 0.005
 end

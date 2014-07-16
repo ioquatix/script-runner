@@ -42,12 +42,8 @@ class ScriptRunnerProcess
       appendBuffer = true
     
     # PTY emulation:
-    #args = Shellwords.split(cmd)
-    #args.unshift('unbuffer')
-    args = ["script", "-qfec", cmd + ' && sleep 0.1', "/dev/null"]
-    #args = ["bash", "-c", cmd]
-    
-    #console.log("args", args, "cwd", cwd, process.pid)
+    args = Shellwords.split(cmd)
+    args.unshift(__dirname + "/script-wrapper.py")
     
     # Spawn the child process:
     @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, detached: true)
