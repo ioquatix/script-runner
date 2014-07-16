@@ -36,9 +36,9 @@ Even for unsaved files without an associated grammar, as long as you have the co
 
 ### Environment Variables
 
-The default Atom process takes environment variables from the shell it was launched from. This might be an issue if launching Atom directly from the desktop environment when using, say, RVM. This is particularly an issue on Mac OS X.
+The default Atom process takes environment variables from the shell it was launched from. This might be an issue if launching Atom directly from the desktop environment when using, say, RVM. This is a particularly insideous problem on Mac OS X.
 
-To work around this, `script-runner` extracts environment variables from the login shell and defines them when you run your scripts. Generally, this should mean that when you run a script from Atom, you get the same behaviour as if you were running it from a terminal.
+To ensure everything works as expected, when a script is run, the environment variables are extracted from the login shell (what you usually get when you open a terminal) and used when you run your script. This should ensure that you get the same behaviour from both Atom and a terminal.
 
 ## Contributing
 
