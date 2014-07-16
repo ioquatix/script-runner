@@ -3,6 +3,8 @@
 ScriptRunnerProcess = require './script-runner-process'
 ScriptRunnerView = require './script-runner-view'
 
+ChildProcess = require 'child_process'
+
 class ScriptRunner
   cfg:
     ext: 'runner.extensions'
@@ -39,6 +41,17 @@ class ScriptRunner
       @scopeMap = atom.config.get(@cfg.scope)
     atom.workspaceView.command 'run:script', => @run()
     atom.workspaceView.command 'run:terminate', => @stop()
+
+  fetchShellEnvironment: (callback) ->
+    exportsCommand = process.env.SHELL + " -lc export"
+    environment = {}
+    
+    # Run the command and update the local process environment:
+    ChildProcess.exec exportsCommand, (error, stdout, stderr) ->
+      for definition in stdout.trim().split('\n')
+        [key, value] = definition.split('=', 2)
+        environment[key] = value
+      callback(environment)
 
   killProcess: (detach = false)->
     if @process?
@@ -82,7 +95,8 @@ class ScriptRunner
     
     @runnerView.clear()
     # In the future it may be useful to support multiple runner views:
-    @process = ScriptRunnerProcess.run(@runnerView, cmd, editor)
+    @fetchShellEnvironment (env) =>
+      @process = ScriptRunnerProcess.run(@runnerView, cmd, env, editor)
 
   stop: ->
     @killProcess()

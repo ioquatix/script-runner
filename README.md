@@ -6,8 +6,6 @@ This package will run various script files inside of Atom. It currently supports
 
 This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`) and proper (currently non-interactive) terminal emulation. Many thanks to Loren Segal and all the contributing developers.
 
-**If you are on Mac OS X and want `rvm` or `virtualenv` to work, follow the instructions in Environment Variables below.**
-
 ## Usage
 
 N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](https://github.com/ioquatix/script-runner/issues/1).
@@ -40,28 +38,7 @@ Even for unsaved files without an associated grammar, as long as you have the co
 
 The default Atom process takes environment variables from the shell it was launched from. This might be an issue if launching Atom directly from the desktop environment when using, say, RVM. This is particularly an issue on Mac OS X.
 
-To work around this, simply open `~/.atom/init.coffee` (`Atom` → `Open Init Script`) and insert the following:
-
-```coffeescript
-path = require 'path'
-
-search_paths = [process.env.PATH]
-home = process.env.HOME
-
-# Make RVM wrappers available to all processes:
-search_paths.unshift(home + "/.rvm/bin")
-
-# Make a specific version of ruby the default (e.g. from `rvm which ruby`):
-search_paths.unshift(home + "/.rvm/rubies/ruby-2.1.2/bin")
-
-# Python virtualenv too:
-search_paths.unshift(home + "/.virtualenvs/python4.2/bin")
-
-# Update the path environment variable:
-process.env.PATH = search_paths.join(path.delimiter)
-```
-
-You should customize this for your exact requirements.
+To work around this, `script-runner` extracts environment variables from the login shell and defines them when you run your scripts. Generally, this should mean that when you run a script from Atom, you get the same behaviour as if you were running it from a terminal.
 
 ## Contributing
 

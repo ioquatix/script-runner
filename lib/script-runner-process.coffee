@@ -4,10 +4,10 @@ Shellwords = require('shellwords')
 
 module.exports =
 class ScriptRunnerProcess
-  @run: (view, cmd, editor) ->
+  @run: (view, cmd, env, editor) ->
     scriptRunnerProcess = new ScriptRunnerProcess(view)
     
-    scriptRunnerProcess.execute(cmd, editor)
+    scriptRunnerProcess.execute(cmd, env, editor)
     
     return scriptRunnerProcess
   
@@ -25,7 +25,7 @@ class ScriptRunnerProcess
       if @view
         @view.append('<Sending ' + signal + '>', 'stdin')
   
-  execute: (cmd, editor) ->
+  execute: (cmd, env, editor) ->
     cwd = atom.project.path
 
     # Save the file if it has been modified:
@@ -40,12 +40,14 @@ class ScriptRunnerProcess
     else
       appendBuffer = true
     
-    # PTY emulation:
+    # PTY emulation wrapper:
     args = Shellwords.split(cmd)
     args.unshift(__dirname + "/script-wrapper.py")
     
     # Spawn the child process:
-    @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, detached: true)
+    @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, detached: true)
+    
+    @view.header('Running: ' + cmd + ' (pgid ' + @child.pid + ')')
     
     # Handle various events relating to the child process:
     @child.stderr.on 'data', (data) =>
@@ -77,5 +79,3 @@ class ScriptRunnerProcess
       @child.stdin.write(editor.getText())
     
     @child.stdin.end()
-    
-    @view.header('Running: ' + cmd + ' (pgid ' + @child.pid + ')')
