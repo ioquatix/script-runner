@@ -8,13 +8,13 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.platform-darwin .workspace .editor':
-  'cmd-shift-x': 'run:script'
+  'ctrl-x': 'run:script'
 
 '.platform-darwin .workspace':
-  'cmd-shift-z': 'run:terminate'
+  'ctrl-c': 'run:terminate'
 
 '.platform-linux .workspace .editor':
-  'ctrl-shift-x': 'run:script'
+  'alt-x': 'run:script'
 
 '.platform-linux .workspace':
-  'ctrl-shift-z': 'run:terminate'
+  'alt-c': 'run:terminate'
