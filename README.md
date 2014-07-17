@@ -10,10 +10,10 @@ This package is a fork of the popular `atom-runner` but with many PRs merged and
 
 N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](https://github.com/ioquatix/script-runner/issues/1).
 
-| Command              | Mac OS X               | Linux/Windows           |
-|----------------------|------------------------|-------------------------|
-| Run: Script          | <kbd>cmd-shift-x</kbd> | <kbd>ctrl-shift-x</kbd> |
-| Run: Terminate       | <kbd>cmd-shift-z</kbd> | <kbd>ctrl-shift-z</kbd> |
+| Command              | Mac OS X          | Linux/Windows    |
+|----------------------|-------------------|------------------|
+| Run: Script          | <kbd>ctrl-x</kbd> | <kbd>alt-x</kbd> |
+| Run: Terminate       | <kbd>ctrl-c</kbd> | <kbd>alt-c</kbd> |
 
 Scripts which have been saved run in their directory, unsaved scripts run in the workspace root directory.
 
@@ -36,9 +36,9 @@ Even for unsaved files without an associated grammar, as long as you have the co
 
 ### Environment Variables
 
-The default Atom process takes environment variables from the shell it was launched from. This might be an issue if launching Atom directly from the desktop environment when using, say, RVM. This is a particularly insideous problem on Mac OS X.
+The default Atom process takes environment variables from the shell it was launched from. This might be an issue if launching Atom directly from the desktop environment when using, say, RVM which exports functionality for interactive terminal sessions.
 
-To ensure everything works as expected, when a script is run, the environment variables are extracted from the login shell (what you usually get when you open a terminal) and used when you run your script. This should ensure that you get the same behaviour from both Atom and a terminal.
+To ensure consistent behavior, when running a script, environment variables are extracted from the interactive login shell. This usually loads the same environment variables you'd expect when using the terminal.
 
 ## Contributing
 
