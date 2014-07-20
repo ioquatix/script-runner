@@ -4,7 +4,7 @@ This package will run various script files inside of Atom. It currently supports
 
 ![Example](https://github.com/ioquatix/script-runner/raw/master/resources/screenshot-1.png)
 
-This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`) and proper (currently non-interactive) terminal emulation. Many thanks to Loren Segal and all the contributing developers.
+This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`), correctly setting the environment (e.g. `RVM` supported out of the box) and proper (currently non-interactive) terminal emulation. Many thanks to Loren Segal and all the contributing developers.
 
 ## Usage
 
