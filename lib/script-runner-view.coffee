@@ -13,7 +13,7 @@ class ScriptRunnerView extends ScrollView
     return view
 
   @content: ->
-    @div class: 'script-runner', =>
+    @div class: 'script-runner', tabindex: -1, =>
       @h1 'Script Runner'
       @div class: 'header'
       @pre class: 'output'
@@ -21,6 +21,9 @@ class ScriptRunnerView extends ScrollView
 
   constructor: (title) ->
     super
+    
+    @command "run:copy", => @copyToClipboard()
+    
     @convert = new Convert({escapeXML: true})
     @_header = @find('.header')
     @_output = @find('.output')
@@ -33,6 +36,9 @@ class ScriptRunnerView extends ScrollView
     header: @_header.html()
     output: @_output.html()
     footer: @_footer.html()
+
+  copyToClipboard: ->
+    atom.clipboard.write(window.getSelection().toString())
 
   getTitle: ->
     "Script Runner: #{@title}"
