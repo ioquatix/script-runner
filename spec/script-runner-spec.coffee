@@ -1,4 +1,4 @@
-ScriptRunner = require '../lib/runner'
+ScriptRunner = require '../lib/script-runner'
 
 # Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
 #
@@ -10,7 +10,7 @@ describe "ScriptRunner", ->
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
-    activationPromise = atom.packages.activatePackage('scriptRunner')
+    activationPromise = atom.packages.activatePackage('script-runner')
 
   describe "when the script-runner:toggle event is triggered", ->
     it "attaches and then detaches the view", ->
