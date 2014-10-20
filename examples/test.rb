@@ -5,7 +5,7 @@ require 'rainbow'
 
 pid = ARGV[0] || $$
 
-data = File.read("/proc/#{pid}/status")
+data = File.read("/proc/#{pid}/status") rescue ""
 
 signals = {}
 
