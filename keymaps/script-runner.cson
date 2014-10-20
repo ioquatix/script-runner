@@ -18,3 +18,9 @@
 
 '.platform-linux .workspace':
   'alt-c': 'run:terminate'
+
+'.platform-darwin .script-runner':
+  'cmd-c': 'run:copy'
+
+'.platform-linux .script-runner':
+  'ctrl-c': 'run:copy'
