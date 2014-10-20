@@ -6,39 +6,23 @@ ScriptRunnerView = require './script-runner-view'
 ChildProcess = require 'child_process'
 
 class ScriptRunner
-  cfg:
-    ext: 'runner.extensions'
-    scope: 'runner.scopes'
-
-  defaultExtensionMap:
-    'spec.coffee': 'jasmine-node --coffee',
-    'sh' : 'bash'
-
-  defaultScopeMap:
-    '^source.coffee': 'coffee'
-    '^source.js': 'node'
-    '^source.ruby': 'ruby'
-    '^source.python': 'python'
-    '^source.go': 'go run'
-    '^text.html.php': 'php'
-    'Shell Script (Bash)': 'bash'
-
-  extensionMap: null
-  scopeMap: null
+  commandMap: [
+    {scope: '^source\\.coffee', command: 'coffee'}
+    {scope: '^source\\.js', command: 'node'}
+    {scope: '^source\\.ruby', command: 'ruby'}
+    {scope: '^source\\.python', command: 'python'}
+    {scope: '^source\\.go', command: 'go run'}
+    {scope: '^text\\.html\\.php', command: 'php'}
+    {scope: 'Shell Script (Bash)', command: 'bash'}
+    {path: 'spec\\.coffee$', command: 'jasmine-node --coffee'},
+    {path: '\\.sh$', command: 'bash'}
+  ]
 
   destroy: ->
-    atom.config.unobserve @cfg.ext
-    atom.config.unobserve @cfg.scope
     @killProcess()
 
   activate: ->
     @runnerView = null
-    atom.config.setDefaults @cfg.ext, @defaultExtensionMap
-    atom.config.setDefaults @cfg.scope, @defaultScopeMap
-    atom.config.observe @cfg.ext, =>
-      @extensionMap = atom.config.get(@cfg.ext)
-    atom.config.observe @cfg.scope, =>
-      @scopeMap = atom.config.get(@cfg.scope)
     atom.workspaceView.command 'run:script', => @run()
     atom.workspaceView.command 'run:terminate', => @stop()
 
@@ -114,26 +98,21 @@ class ScriptRunner
   pane: null
 
   commandFor: (editor) ->
-    # try to extract from the shebang line
+    # Try to extract from the shebang line:
     firstLine = editor.buffer.getLines()[0]
     if firstLine.match('^#!')
       #console.log("firstLine", firstLine)
       return firstLine.substr(2)
     
-    # try to lookup by extension
-    if editor.getPath()?
-      for ext in Object.keys(@extensionMap).sort((a,b) -> b.length - a.length)
-        #console.log("Matching extension", ext)
-        if editor.getPath().match('\\.' + ext + '$')
-          #console.log("Matched extension", ext)
-          return @extensionMap[ext]
-
-    # lookup by grammar
+    # Lookup using the command map:
+    path = editor.getPath()
     scope = editor.getCursorScopes()[0]
-    for pattern in Object.keys(@scopeMap)
-      #console.log("Matching scope", name, "with", scope)
-      if scope.match(pattern)
-        #console.log("Matched scope", name, "with", pattern)
-        return @scopeMap[pattern]
+    for method in @commandMap
+      if method.fileName and path?
+        if path.match(method.path)
+          return method.command
+      else if method.scope
+        if scope.match(method.scope)
+          return method.command
 
 module.exports = new ScriptRunner
