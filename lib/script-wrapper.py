@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Copyright, 2014, by Samuel Williams. <http://www.codeotaku.com>
 # Released under the MIT license.
 """
