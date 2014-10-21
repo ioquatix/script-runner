@@ -67,8 +67,14 @@ class ScriptWrapper:
 		# Process status not reaped yet, all input was consumed:
 		return self.child.wait()
 
-wrapper = ScriptWrapper()
-status = wrapper.wait_for_completion()
+status = 1
+
+try:
+	wrapper = ScriptWrapper()
+	status = wrapper.wait_for_completion()
+except FileNotFoundError as error:
+	# Usually occurs if the shebang line executable was incorrect/unavailable:
+	debug(str(error))
 
 # Cause the wrapper process to die in the same way, so that the status is propagated upstream:
 if status < 0:
