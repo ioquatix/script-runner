@@ -66,6 +66,11 @@ class ScriptRunner
       @runnerView = new ScriptRunnerView(editor.getTitle())
       panes = atom.workspace.getPanes()
       @pane = panes[panes.length - 1].splitRight(items: [@runnerView])
+      
+      # handle the destruction of the pane.
+      @pane.onDidDestroy () =>
+        @killProcess()
+    
     else
       @runnerView = scriptRunners[0].view
       @pane = scriptRunners[0].pane
