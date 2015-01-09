@@ -57,6 +57,7 @@ class ScriptRunner
         runner.proc = null
   
   killall: (detach = false) ->
+    # Kills all the running processes
     for runner in @runners
       if runner.proc?
         proc = runner.proc
@@ -72,12 +73,12 @@ class ScriptRunner
       @pane = atom.workspace.getActivePane().splitRight()
       @pane.onDidDestroy () =>
         @killall()
+        @pane = null
       
       @pane.onWillDestroyItem (evt) =>
         # kill the process of the removed view and scratch it from the array
         for runner in @runners
           if evt.item is runner.view
-            console.log 'destroyed'
             @killProcess(runner)
     
     runner = null
