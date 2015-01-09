@@ -19,10 +19,9 @@ class ScriptRunner
   ]
 
   destroy: ->
-    @killProcess()
+    @killall()
 
   activate: ->
-    @runnerView = null
     @runners = [] # this is just for keeping track of runners
     @runnerPane = null
     atom.workspaceView.command 'run:script', => @run()
@@ -49,12 +48,13 @@ class ScriptRunner
       callback(environment)
 
   killProcess: (runner, detach = false)->
-    if runner.proc?
-      runner.proc.stop('SIGTERM')
-      if detach
-        # Don't render into the view any more:
-        runner.proc.detach()
-        runner.proc = null
+    if runner?
+      if runner.proc?
+        runner.proc.stop('SIGTERM')
+        if detach
+          # Don't render into the view any more:
+          runner.proc.detach()
+          runner.proc = null
   
   killall: (detach = false) ->
     # Kills all the running processes
@@ -77,21 +77,10 @@ class ScriptRunner
       
       @pane.onWillDestroyItem (evt) =>
         # kill the process of the removed view and scratch it from the array
-        for runner in @runners
-          if evt.item is runner.view
-            @killProcess(runner)
-    
-    runner = null
-    
-    for nextRunner in @runners
-      # Searches if the current itor already has a runner view
-      if nextRunner.editor is editor
-        runner = nextRunner
-        # I'm not sure if it's a g already has a runner view
-      if nextRunner.editor is editor
-        runner = nextRunner
-        # I'm not sure if it's a good idea, but...
+        runner = @getRunnerBy(evt.item)
         @killProcess(runner)
+    
+    runner = @getRunnerBy(editor, 'editor')
     
     if not runner?
       runner = {editor: editor, view: new ScriptRunnerView(editor.getTitle()), proc: null}
@@ -123,10 +112,8 @@ class ScriptRunner
       runner.proc = ScriptRunnerProcess.run(runner.view, cmd, env, editor)
 
   stop: ->
-    @killProcess()
-
-  runnerView: null
-  pane: null
+    runner = @getRunnerBy(@pane.getActiveItem())
+    @killProcess(runner)
 
   commandFor: (editor) ->
     # Try to extract from the shebang line:
@@ -145,5 +132,12 @@ class ScriptRunner
       else if method.scope
         if scope.match(method.scope)
           return method.command
+  
+  getRunnerBy: (attr_obj, attr_name = 'view') ->
+    for runner in @runners
+      if runner[attr_name] is attr_obj
+        return runner
+    
+    return null
 
 module.exports = new ScriptRunner
