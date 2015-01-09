@@ -19,10 +19,11 @@ class ScriptRunner
   ]
 
   destroy: ->
-    @killall()
+    @killAllProcesses()
 
   activate: ->
     @runners = [] # this is just for keeping track of runners
+    # keeps track of runners as {editor: editor, view: ScriptRunnerView, process: ScriptRunnerProcess}
     @runnerPane = null
     atom.workspaceView.command 'run:script', => @run()
     atom.workspaceView.command 'run:terminate', => @stop()
@@ -56,7 +57,7 @@ class ScriptRunner
           runner.proc.detach()
           runner.proc = null
   
-  killall: (detach = false) ->
+  killAllProcesses: (detach = false) ->
     # Kills all the running processes
     for runner in @runners
       if runner.proc?
@@ -72,18 +73,18 @@ class ScriptRunner
       # creates a new pane if there isn't one yet
       @pane = atom.workspace.getActivePane().splitRight()
       @pane.onDidDestroy () =>
-        @killall()
+        @killAllProcesses(true)
         @pane = null
       
       @pane.onWillDestroyItem (evt) =>
         # kill the process of the removed view and scratch it from the array
         runner = @getRunnerBy(evt.item)
-        @killProcess(runner)
+        @killProcess(runner, true)
     
     runner = @getRunnerBy(editor, 'editor')
     
     if not runner?
-      runner = {editor: editor, view: new ScriptRunnerView(editor.getTitle()), proc: null}
+      runner = {editor: editor, view: new ScriptRunnerView(editor.getTitle()), process: null}
       @runners.push(runner)
     
     else
@@ -109,7 +110,7 @@ class ScriptRunner
     runner.view.clear()
     # In the future it may be useful to support multiple runner views:
     @fetchShellEnvironment (env) =>
-      runner.proc = ScriptRunnerProcess.run(runner.view, cmd, env, editor)
+      runner.process = ScriptRunnerProcess.run(runner.view, cmd, env, editor)
 
   stop: ->
     runner = @getRunnerBy(@pane.getActiveItem())
@@ -134,6 +135,7 @@ class ScriptRunner
           return method.command
   
   getRunnerBy: (attr_obj, attr_name = 'view') ->
+    # Finds the runner object either by view, editor, or process
     for runner in @runners
       if runner[attr_name] is attr_obj
         return runner
