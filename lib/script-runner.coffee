@@ -101,8 +101,8 @@ class ScriptRunner
       alert("Not sure how to run '#{path}' :/")
       return false
     
-    @killProcess(true)
     runner = @createRunnerView(editor)
+    @killProcess(runner, true)
     
     @pane.activateItem(runner.view)
     
