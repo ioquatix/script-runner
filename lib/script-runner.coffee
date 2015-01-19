@@ -19,10 +19,12 @@ class ScriptRunner
   ]
 
   destroy: ->
-    @killProcess()
+    @killAllProcesses()
 
   activate: ->
-    @runnerView = null
+    @runners = [] # this is just for keeping track of runners
+    # keeps track of runners as {editor: editor, view: ScriptRunnerView, process: ScriptRunnerProcess}
+    @runnerPane = null
     atom.workspaceView.command 'run:script', => @run()
     atom.workspaceView.command 'run:terminate', => @stop()
 
@@ -46,34 +48,48 @@ class ScriptRunner
         environment[key] = value if key != ''
       callback(environment)
 
-  killProcess: (detach = false)->
-    if @process?
-      @process.stop('SIGTERM')
-      if detach
-        # Don't render into the view any more:
-        @process.detach()
-        @process = null
+  killProcess: (runner, detach = false)->
+    if runner?
+      if runner.process?
+        runner.process.stop('SIGTERM')
+        if detach
+          # Don't render into the view any more:
+          runner.process.detach()
+          runner.process = null
+  
+  killAllProcesses: (detach = false) ->
+    # Kills all the running processes
+    for runner in @runners
+      if runner.process?
+        runner.process.stop('SIGTERM')
+        
+        if detach
+          runner.process.detach()
+          runner.process = null
 
   createRunnerView: (editor) ->
-    scriptRunners = []
-    
-    # Find all existing ScriptRunnerView instances:
-    for pane in atom.workspace.getPanes()
-      for item in pane.items
-        scriptRunners.push({pane: pane, view: item}) if item instanceof ScriptRunnerView
-    
-    if scriptRunners.length == 0
-      @runnerView = new ScriptRunnerView(editor.getTitle())
-      panes = atom.workspace.getPanes()
-      @pane = panes[panes.length - 1].splitRight(items: [@runnerView])
-      
-      # handle the destruction of the pane.
+    if not @pane?
+      # creates a new pane if there isn't one yet
+      @pane = atom.workspace.getActivePane().splitRight()
       @pane.onDidDestroy () =>
-        @killProcess()
+        @killAllProcesses(true)
+        @pane = null
+      
+      @pane.onWillDestroyItem (evt) =>
+        # kill the process of the removed view and scratch it from the array
+        runner = @getRunnerBy(evt.item)
+        @killProcess(runner, true)
+    
+    runner = @getRunnerBy(editor, 'editor')
+    
+    if not runner?
+      runner = {editor: editor, view: new ScriptRunnerView(editor.getTitle()), process: null}
+      @runners.push(runner)
     
     else
-      @runnerView = scriptRunners[0].view
-      @pane = scriptRunners[0].pane
+      runner.view.setTitle(editor.getTitle()) # if it changed
+    
+    return runner
 
   run: ->
     editor = atom.workspace.getActiveEditor()
@@ -85,22 +101,19 @@ class ScriptRunner
       alert("Not sure how to run '#{path}' :/")
       return false
     
-    @killProcess(true)
-    @createRunnerView(editor)
+    runner = @createRunnerView(editor)
+    @killProcess(runner, true)
     
-    @runnerView.setTitle(editor.getTitle())
-    @pane.activateItem(@runnerView)
+    @pane.activateItem(runner.view)
     
-    @runnerView.clear()
+    runner.view.clear()
     # In the future it may be useful to support multiple runner views:
     @fetchShellEnvironment (env) =>
-      @process = ScriptRunnerProcess.run(@runnerView, cmd, env, editor)
+      runner.process = ScriptRunnerProcess.run(runner.view, cmd, env, editor)
 
   stop: ->
-    @killProcess()
-
-  runnerView: null
-  pane: null
+    runner = @getRunnerBy(@pane.getActiveItem())
+    @killProcess(runner)
 
   commandFor: (editor) ->
     # Try to extract from the shebang line:
@@ -119,5 +132,13 @@ class ScriptRunner
       else if method.scope
         if scope.match(method.scope)
           return method.command
+  
+  getRunnerBy: (attr_obj, attr_name = 'view') ->
+    # Finds the runner object either by view, editor, or process
+    for runner in @runners
+      if runner[attr_name] is attr_obj
+        return runner
+    
+    return null
 
 module.exports = new ScriptRunner
