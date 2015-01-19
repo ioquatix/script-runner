@@ -50,23 +50,22 @@ class ScriptRunner
 
   killProcess: (runner, detach = false)->
     if runner?
-      if runner.proc?
-        runner.proc.stop('SIGTERM')
+      if runner.process?
+        runner.process.stop('SIGTERM')
         if detach
           # Don't render into the view any more:
-          runner.proc.detach()
-          runner.proc = null
+          runner.process.detach()
+          runner.process = null
   
   killAllProcesses: (detach = false) ->
     # Kills all the running processes
     for runner in @runners
-      if runner.proc?
-        proc = runner.proc
-        proc.stop('SIGTERM')
+      if runner.process?
+        runner.process.stop('SIGTERM')
         
         if detach
-          proc.detach()
-          runner.proc = null
+          runner.process.detach()
+          runner.process = null
 
   createRunnerView: (editor) ->
     if not @pane?
