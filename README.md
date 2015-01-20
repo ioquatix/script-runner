@@ -17,6 +17,10 @@ N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](h
 
 Scripts which have been saved run in their directory, unsaved scripts run in the workspace root directory.
 
+The Run: Script command is used script-runner will check if there is already an output view dedicated to the script in the text editor in focus. If there isn't one a new one will be created otherwise it will clear the already existing one and reuse it.
+
+Closing a runner view will cause its process to terminate to avoid losing control over scripts executed with this plugin.
+
 ### Pseudo TTY Emulation
 
 Most interpreters output to `stdout` and `stderr`, however the buffering mechanisms are often different when the process is not running on a PTY. For example, Ruby buffers `stdout` when not attached to a terminal which causes incorrect order of output when writing to both `stdout` and `stderr`. Additionally, most programs won't output control codes used for colouring the output when not running on a terminal. `script-runner` uses the `script` command to emulate a terminal and generally gives the best output.
