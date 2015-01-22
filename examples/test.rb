@@ -3,6 +3,8 @@
 require 'set'
 require 'rainbow'
 
+puts Time.now.inspect
+
 pid = ARGV[0] || $$
 
 data = File.read("/proc/#{pid}/status") rescue ""
