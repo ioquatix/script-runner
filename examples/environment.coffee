@@ -1,4 +1,4 @@
-#!/opt/local/bin/coffee
+#!/usr/bin/env coffee
 
 console.log(process.env)
 
