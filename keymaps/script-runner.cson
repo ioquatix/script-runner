@@ -7,18 +7,19 @@
 
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
-'.platform-darwin .workspace .editor':
+'.platform-darwin atom-text-editor':
   'ctrl-x': 'run:script'
 
-'.platform-darwin .workspace':
+'.platform-darwin atom-workspace':
   'ctrl-c': 'run:terminate'
 
-'.platform-linux .workspace .editor':
+'.platform-linux atom-text-editor':
   'alt-x': 'run:script'
 
-'.platform-linux .workspace':
+'.platform-linux atom-workspace':
   'alt-c': 'run:terminate'
 
+# Copy from script runner pane:
 '.platform-darwin .script-runner':
   'cmd-c': 'run:copy'
 
