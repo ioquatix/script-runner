@@ -25,8 +25,11 @@ class ScriptRunner
     @runners = [] # this is just for keeping track of runners
     # keeps track of runners as {editor: editor, view: ScriptRunnerView, process: ScriptRunnerProcess}
     @runnerPane = null
-    atom.workspaceView.command 'run:script', => @run()
-    atom.workspaceView.command 'run:terminate', => @stop()
+    
+    # register commands
+    atom.commands.add 'atom-workspace',
+      'run:script': (event) => @run(),
+      'run:terminate': (event) => @stop()
 
   fetchShellEnvironment: (callback) ->
     # I tried using ChildProcess.execFile but there is no way to set detached and this causes the child shell to lock up. This command runs an interactive login shell and executes the export command to get a list of environment variables. We then use these to run the script:
