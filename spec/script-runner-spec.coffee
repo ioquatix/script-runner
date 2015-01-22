@@ -7,23 +7,24 @@ ScriptRunner = require '../lib/script-runner'
 
 describe "ScriptRunner", ->
   activationPromise = null
+  workspaceElement = null
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getVew(atom.workspace)
     activationPromise = atom.packages.activatePackage('script-runner')
 
   describe "when the script-runner:toggle event is triggered", ->
     it "attaches and then detaches the view", ->
-      expect(atom.workspaceView.find('.script-runner')).not.toExist()
+      expect(workspaceElement.find('.script-runner')).not.toExist()
 
       # This is an activation event, triggering it will cause the package to be
       # activated.
-      atom.workspaceView.trigger 'script-runner:toggle'
+      atom.commands.dispatch workspaceElement 'script-runner:toggle'
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        expect(atom.workspaceView.find('.script-runner')).toExist()
-        atom.workspaceView.trigger 'script-runner:toggle'
-        expect(atom.workspaceView.find('.script-runner')).not.toExist()
+        expect(workspaceElement.find('.script-runner')).toExist()
+        atom.commands.dispatch workspaceElement 'script-runner:toggle'
+        expect(workspaceElement.find('.script-runner')).not.toExist()
