@@ -115,6 +115,9 @@ class ScriptRunner
       runner.process = ScriptRunnerProcess.run(runner.view, cmd, env, editor)
 
   stop: ->
+    unless @pane
+      return
+    
     runner = @getRunnerBy(@pane.getActiveItem())
     @killProcess(runner)
 
