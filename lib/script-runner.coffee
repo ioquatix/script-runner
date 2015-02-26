@@ -47,8 +47,20 @@ class ScriptRunner
     child.on 'close', (code, signal) ->
       environment = {}
       for definition in buffer.split('\n')
-        [key, value] = definition.split('=', 2)
-        environment[key] = value if key != ''
+        # Only process the output from export, lines that don't start with 'declare -x' could be from
+        # login scripts and etc.
+        if definition.startsWith('declare -x')
+          # Remove the 'declare -x' from start of each line
+          [key, value] = definition.slice(10).trim().split('=', 2)
+          
+          # Sometimes env variables are not set, but declared and thus no value is returned
+          if value
+            # Remove potential quotation marks from the values that might be printed by export
+            if value.endsWith('"') then value = value.slice(0, -1)
+            if value.startsWith('"') then value = value.slice(1)
+            
+          # Then add all non-empty values to the extracted environment
+          environment[key] = value if key != ''
       callback(environment)
 
   killProcess: (runner, detach = false)->
