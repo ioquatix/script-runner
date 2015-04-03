@@ -107,7 +107,7 @@ class ScriptRunner
     return runner
 
   run: ->
-    editor = atom.workspace.getActiveEditor()
+    editor = atom.workspace.getActiveTextEditor()
     return unless editor?
     
     path = editor.getPath()
@@ -142,7 +142,7 @@ class ScriptRunner
     
     # Lookup using the command map:
     path = editor.getPath()
-    scope = editor.getCursorScopes()[0]
+    scope = editor.getLastCursor().getScopes()[0]
     for method in @commandMap
       if method.fileName and path?
         if path.match(method.path)
