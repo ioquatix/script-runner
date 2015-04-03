@@ -1,4 +1,4 @@
-{ScrollView} = require 'atom'
+{ScrollView} = require 'atom-space-pen-views'
 Convert = require('ansi-to-html')
 
 module.exports =
