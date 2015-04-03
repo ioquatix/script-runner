@@ -2,6 +2,7 @@
   "name": "script-runner",
   "main": "./lib/script-runner",
   "version": "1.7.1",
+  "os": "!win32",
   "description": "Runs scripts inside of Atom, just like from a terminal.",
   "license": "MIT",
   "repository": {
