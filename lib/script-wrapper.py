@@ -33,6 +33,12 @@ def debug(msg):
 	sys.stderr.write(msg)
 	sys.stderr.flush()
 
+# Compatibility with python 2.7 which doesn't have FileNotFoundError.
+try:
+	FileNotFoundError
+except NameError:
+	FileNotFoundError = OSError
+
 def write_all(fd, data):
 	"""Write all the data to a descriptor."""
 	while data:
@@ -41,9 +47,14 @@ def write_all(fd, data):
 
 class ScriptWrapper:
 	def __init__(self, command = sys.argv[1:]):
+		self.command = command
+	
+	def spawn(self):
 		self.master, slave = pty.openpty()
-		self.child = subprocess.Popen(command, stdout=slave, stderr=slave, close_fds=True)
+		self.child = subprocess.Popen(self.command, stdout=slave, stderr=slave, close_fds=True)
 		os.close(slave)
+		
+		return self.wait_for_completion()
 
 	def wait_for_completion(self):
 		status = None
@@ -69,12 +80,13 @@ class ScriptWrapper:
 
 status = 1
 
+wrapper = ScriptWrapper()
+
 try:
-	wrapper = ScriptWrapper()
-	status = wrapper.wait_for_completion()
+	status = wrapper.spawn()
 except FileNotFoundError as error:
 	# Usually occurs if the shebang line executable was incorrect/unavailable:
-	debug(str(error))
+	debug("%s while trying to execute %s" % (error, wrapper.command[0]))
 
 # Cause the wrapper process to die in the same way, so that the status is propagated upstream:
 if status < 0:
