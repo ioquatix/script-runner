@@ -130,7 +130,7 @@ class ScriptRunner
     
     # Lookup using the command map:
     path = editor.getPath()
-    scope = editor.getLastCursor().getScopes()[0]
+    scope = editor.getRootScopeDescriptor().scopes[0]
     for method in @commandMap
       if method.fileName and path?
         if path.match(method.path)
