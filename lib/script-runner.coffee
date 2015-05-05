@@ -123,7 +123,7 @@ class ScriptRunner
 
   commandFor: (editor) ->
     # Try to extract from the shebang line:
-    firstLine = editor.buffer.getLines()[0]
+    firstLine = editor.lineTextForBufferRow(0)
     if firstLine.match('^#!')
       #console.log("firstLine", firstLine)
       return firstLine.substr(2)
