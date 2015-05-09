@@ -92,11 +92,11 @@ class ScriptRunner
     
     runner.view.clear()
     
-    ShellEnvironment.loginEnvironment (error_message, environment) =>
+    ShellEnvironment.loginEnvironment (error, environment) =>
       if environment
         runner.process = ScriptRunnerProcess.run(runner.view, cmd, environment, editor)
-      
-      else throw new Error error_message
+      else
+        throw new Error error
 
   stop: ->
     unless @pane
