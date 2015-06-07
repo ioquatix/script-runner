@@ -9,6 +9,10 @@ exportsCommand = process.env.SHELL + " -lc export"
 
 # Run the command and update the local process environment:
 ChildProcess.exec exportsCommand, (error, stdout, stderr) ->
-	for definition in stdout.trim().split('\n')
-		[key, value] = definition.split('=', 2)
-		process.env[key] = value
+  regex = new RegExp('^declare\\s-x\\s(.*?)="(.*?)"',"g")
+  for definition in stdout.trim().split('\n')
+    definition = definition.replace /^declare\s-x\s(.*?)="(.*?)"/g, (a,n,v) ->
+      v = v.replace /\\\\/g, "\\"
+      "#{n}=#{v}"
+    [key, value] = definition.split('=', 2)
+    process.env[key] = value
