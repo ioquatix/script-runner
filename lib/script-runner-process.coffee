@@ -27,7 +27,10 @@ class ScriptRunnerProcess
   
   execute: (cmd, env, editor) ->
     cwd = atom.project.path
-
+    
+    # Split the incoming command so we can modify it
+    args = Shellwords.split(cmd)
+    
     # Save the file if it has been modified:
     if editor.getPath()
       editor.save()
@@ -35,18 +38,21 @@ class ScriptRunnerProcess
     
     # If the editor refers to a buffer on disk which has not been modified, we can use it directly:
     if editor.getPath() and !editor.buffer.isModified()
-      cmd = cmd + ' ' + editor.getPath()
+      args.push(editor.getPath())
       appendBuffer = false
     else
       appendBuffer = true
     
+    # Reformat cmd string (Shellwords.join doesn't exist yet):
+    cmd = args.join(' ')
+    
     # PTY emulation wrapper:
-    args = Shellwords.split(cmd)
     args.unshift(__dirname + "/script-wrapper.py")
     
     # Spawn the child process:
     @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, detached: true)
     
+    # Update the status (*Shellwords.join doesn't exist yet):
     @view.header('Running: ' + cmd + ' (pgid ' + @child.pid + ')')
     
     # Handle various events relating to the child process:
