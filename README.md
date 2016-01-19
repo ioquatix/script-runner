@@ -44,6 +44,10 @@ The default Atom process takes environment variables from the shell it was launc
 
 To ensure consistent behavior, when running a script, environment variables are extracted from the interactive login shell. This usually loads the same environment variables you'd expect when using the terminal.
 
+### Split Direction
+
+It is possible to configure which way to split the new pane. Open your Atom config file and edit `'script-runner'.splitDirection`
+
 ## Contributing
 
 1. Fork it
