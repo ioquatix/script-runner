@@ -46,7 +46,14 @@ To ensure consistent behavior, when running a script, environment variables are 
 
 ### Split Direction
 
-It is possible to configure which way to split the new pane. Open your Atom config file and edit `'script-runner'.splitDirection`
+It is possible to configure which way to split the new pane. Open your Atom config file and edit `'script-runner'.splitDirection`, the possible
+values are: `'up'`, `'down'`, `'left'` and `'right'`. For example:
+```cson
+"*":
+  //...
+  'script-runner':
+    `splitDirection`: `down`
+```
 
 ## Contributing
 
