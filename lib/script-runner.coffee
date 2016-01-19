@@ -19,6 +19,12 @@ class ScriptRunner
     {path: '\\.sh$', command: 'bash'}
   ]
 
+  config:
+    splitDirection:
+      type: 'string'
+      default: 'right'
+      enum: ['left', 'right', 'up', 'down']
+
   destroy: ->
     @killAllProcesses()
 
@@ -54,7 +60,12 @@ class ScriptRunner
   createRunnerView: (editor) ->
     if not @pane?
       # creates a new pane if there isn't one yet
-      @pane = atom.workspace.getActivePane().splitRight()
+      switch atom.config.get('script-runner.splitDirection')
+        when 'up' then @pane = atom.workspace.getActivePane().splitUp()
+        when 'down' then @pane = atom.workspace.getActivePane().splitDown()
+        when 'left' then @pane = atom.workspace.getActivePane().splitLeft()
+        when 'right' then @pane = atom.workspace.getActivePane().splitRight()
+      
       @pane.onDidDestroy () =>
         @killAllProcesses(true)
         @pane = null
