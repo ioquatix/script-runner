@@ -54,7 +54,7 @@ class ScriptRunner
   createRunnerView: (editor) ->
     if not @pane?
       # creates a new pane if there isn't one yet
-      @pane = atom.workspace.getActivePane().splitRight()
+      @pane = atom.workspace.getActivePane().splitDown()
       @pane.onDidDestroy () =>
         @killAllProcesses(true)
         @pane = null
