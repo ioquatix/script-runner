@@ -24,6 +24,10 @@ class ScriptRunner
       type: 'string'
       default: 'right'
       enum: ['left', 'right', 'up', 'down']
+    
+    scrollbackDistance:
+      type: 'number'
+      default: 555
 
   destroy: ->
     @killAllProcesses()

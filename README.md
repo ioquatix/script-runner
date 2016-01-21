@@ -55,6 +55,12 @@ values are: `'up'`, `'down'`, `'left'` and `'right'`. For example:
     `splitDirection`: `down`
 ```
 
+
+### Scrollback Distance
+
+To limit the number of lines kept in the output window simply edit the `'script-runner'.scrollbackDistance` option in
+your Atom config file
+
 ## Contributing
 
 1. Fork it

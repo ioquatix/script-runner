@@ -58,12 +58,17 @@ class ScriptRunnerProcess
     # Handle various events relating to the child process:
     @child.stderr.on 'data', (data) =>
       if @view?
-        @view.append(data, 'stderr')
+        lines = data.toString().split '\n'
+        for line in lines
+          @view.append(line, 'stderr')
+        
         @view.scrollToBottom()
     
     @child.stdout.on 'data', (data) =>
       if @view?
-        @view.append(data, 'stdout')
+        lines = data.toString().split '\n'
+        for line in lines
+          @view.append(line, 'stdout')
         @view.scrollToBottom()
     
     @child.on 'close', (code, signal) =>
