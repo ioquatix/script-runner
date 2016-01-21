@@ -5,8 +5,9 @@ module.exports =
 class ScriptRunnerView extends ScrollView
   atom.deserializers.add(this)
 
-  @deserialize: ({title, header, output, footer}) ->
+  @deserialize: ({title, linecount, header, output, footer}) ->
     view = new ScriptRunnerView(title)
+    view.linecount = linecount
     view._header.html(header)
     view._output.html(output)
     view._footer.html(footer)
@@ -25,6 +26,7 @@ class ScriptRunnerView extends ScrollView
     atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
     
     @convert = new Convert({escapeXML: true})
+    @linecount = 0
     @_header = @find('.header')
     @_output = @find('.output')
     @_footer = @find('.footer')
@@ -33,6 +35,7 @@ class ScriptRunnerView extends ScrollView
   serialize: ->
     deserializer: 'ScriptRunnerView'
     title: @title
+    linecount: @linecount
     header: @_header.html()
     output: @_output.html()
     footer: @_footer.html()
@@ -48,15 +51,22 @@ class ScriptRunnerView extends ScrollView
     @find('h1').html(@getTitle())
 
   clear: ->
+    @linecount = 0
     @_output.html('')
     @_header.html('')
     @_footer.html('')
 
   append: (text, className) ->
+    # console.log @_output.find('span:first-child')
+    if @linecount >= atom.config.get('script-runner.scrollbackDistance')
+      # console.log 'removing'
+      @_output.find(':first-child').remove()
+    
     span = document.createElement('span')
     span.innerHTML = @convert.toHtml([text])
     span.className = className || 'stdout'
     @_output.append(span)
+    @linecount += 1
 
   header: (text) ->
     @_header.html(text)
