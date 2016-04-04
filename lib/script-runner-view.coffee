@@ -1,5 +1,7 @@
-{ScrollView} = require 'atom-space-pen-views'
+{ScrollView, TextEditorView} = require 'atom-space-pen-views'
 Convert = require('ansi-to-html')
+{Emitter} = require('atom')
+
 
 module.exports =
 class ScriptRunnerView extends ScrollView
@@ -18,13 +20,17 @@ class ScriptRunnerView extends ScrollView
       @h1 'Script Runner'
       @div class: 'header'
       @pre class: 'output'
+      @subview 'input', new TextEditorView(mini: true, placeholderText: 'User input')
       @div class: 'footer'
 
   constructor: (title) ->
     super
-    
+
     atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
-    
+    atom.commands.add 'atom-text-editor', 'core:confirm', => @sendInput()
+
+    @emitter = new Emitter
+
     @convert = new Convert({escapeXML: true})
     @linecount = 0
     @_header = @find('.header')
@@ -42,6 +48,15 @@ class ScriptRunnerView extends ScrollView
 
   copyToClipboard: ->
     atom.clipboard.write(window.getSelection().toString())
+
+  sendInput: ->
+    inputText = @input.getText()
+    console.log(inputText)
+    @input.setText('')
+    @emitter.emit 'input-ready', inputText + '\n'
+
+  onInputReady: (callback) ->
+    @emitter.on 'input-ready', callback
 
   getTitle: ->
     "Script Runner: #{@title}"
@@ -61,7 +76,7 @@ class ScriptRunnerView extends ScrollView
     if @linecount >= atom.config.get('script-runner.scrollbackDistance')
       # console.log 'removing'
       @_output.find(':first-child').remove()
-    
+
     span = document.createElement('span')
     span.innerHTML = @convert.toHtml([text])
     span.className = className || 'stdout'
