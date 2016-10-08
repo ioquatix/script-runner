@@ -20,11 +20,11 @@ class ScriptRunnerView extends ScrollView
       @pre class: 'output'
       @div class: 'footer'
 
-  constructor: (title) ->
+  constructor: (title, theme) ->
     super
-    
-    atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
-    
+
+    atom.commands.add 'div.script-runner.'+theme, 'run:copy', => @copyToClipboard()
+
     @convert = new Convert({escapeXML: true})
     @linecount = 0
     @_header = @find('.header')
@@ -61,7 +61,7 @@ class ScriptRunnerView extends ScrollView
     if @linecount >= atom.config.get('script-runner.scrollbackDistance')
       # console.log 'removing'
       @_output.find(':first-child').remove()
-    
+
     span = document.createElement('span')
     span.innerHTML = @convert.toHtml([text])
     span.className = className || 'stdout'

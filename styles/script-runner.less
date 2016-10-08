@@ -5,22 +5,49 @@
 @import "ui-variables";
 
 .script-runner {
-  background: #fff;
+  //common to all themes
   padding: 0px 20px;
   padding-bottom: 20px;
   overflow-y: scroll;
 
   pre {
-    background-color: #f0f0f0;
-    border: 1px solid #cccbba;
+    border: 1px solid;
     line-height: normal;
+  }
+
+  .footer, .header {
+    margin: 8px 10px;
+  }
+}
+
+.script-runner.light {
+  background: #fff;
+
+  pre {
+    background-color: #f0f0f0;
+    border-color: #cccbba;
 
     .stdout { color: black; }
     .stderr { color: red; }
   }
 
   .footer, .header {
-    margin: 8px 10px;
     color: #333;
   }
+}
+
+.script-runner.dark {
+    background: #000;
+
+    pre {
+      background-color: #000;
+      border-color: #444566;
+
+      .stdout { color: white; }
+      .stderr { color: red; }
+    }
+
+    .footer, .header {
+      color: #DDD;
+    }
 }
