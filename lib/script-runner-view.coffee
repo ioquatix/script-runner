@@ -20,10 +20,10 @@ class ScriptRunnerView extends ScrollView
       @pre class: 'output'
       @div class: 'footer'
 
-  constructor: (title, theme) ->
+  constructor: (title) ->
     super
 
-    atom.commands.add 'div.script-runner.'+theme, 'run:copy', => @copyToClipboard()
+    atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
 
     @convert = new Convert({escapeXML: true})
     @linecount = 0
@@ -49,6 +49,13 @@ class ScriptRunnerView extends ScrollView
   setTitle: (title) ->
     @title = title
     @find('h1').html(@getTitle())
+
+  setTheme: (theme) ->
+    console.log("set theme:", theme)
+    @theme = theme
+    console.log("old theme:", @attr('data-theme'))
+    @attr('data-theme', theme)
+    console.log("now theme:", @attr('data-theme'))
 
   clear: ->
     @linecount = 0

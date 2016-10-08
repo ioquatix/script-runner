@@ -33,8 +33,8 @@ class ScriptRunner
       type: 'string'
       default: 'light'
       enum: [
-        {value: 'light'}
-        {value: 'dark'}
+        {value: 'light', description: "Light"}
+        {value: 'dark', description: "Dark"}
       ]
 
   destroy: ->
@@ -90,12 +90,13 @@ class ScriptRunner
     runner = @getRunnerBy(editor, 'editor')
 
     if not runner?
-      runner = {editor: editor, view: new ScriptRunnerView(editor.getTitle(), atom.config.get('script-runner.theme')), process: null}
+      runner = {editor: editor, view: new ScriptRunnerView(editor.getTitle()), process: null}
       @runners.push(runner)
 
     else
       runner.view.setTitle(editor.getTitle()) # if it changed
 
+    runner.view.setTheme(atom.config.get('script-runner.theme'))
     return runner
 
   run: ->
@@ -114,6 +115,7 @@ class ScriptRunner
     @pane.activateItem(runner.view)
 
     runner.view.clear()
+    runner.view.setTheme(atom.config.get('script-runner.theme'))
 
     ShellEnvironment.loginEnvironment (error, environment) =>
       if environment
