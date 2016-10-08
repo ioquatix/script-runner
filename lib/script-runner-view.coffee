@@ -51,11 +51,8 @@ class ScriptRunnerView extends ScrollView
     @find('h1').html(@getTitle())
 
   setTheme: (theme) ->
-    console.log("set theme:", theme)
     @theme = theme
-    console.log("old theme:", @attr('data-theme'))
     @attr('data-theme', theme)
-    console.log("now theme:", @attr('data-theme'))
 
   clear: ->
     @linecount = 0
