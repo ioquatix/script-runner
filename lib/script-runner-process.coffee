@@ -77,11 +77,3 @@ class ScriptRunnerProcess
       @child.write(inputText)
     
     startTime = new Date
-    
-    # # Could not supply file name:
-    # if appendBuffer
-    #   @child.write(editor.getText())
-    # 
-    # # @child.write('five')
-    # #
-    # # @child.write('')
