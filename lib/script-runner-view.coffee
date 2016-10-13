@@ -51,7 +51,6 @@ class ScriptRunnerView extends ScrollView
 
   sendInput: ->
     inputText = @input.getText()
-    console.log(inputText)
     @input.setText('')
     @emitter.emit 'input-ready', inputText + '\n'
 

@@ -6,6 +6,8 @@ ScriptRunnerView = require './script-runner-view'
 ChildProcess = require 'child_process'
 ShellEnvironment = require 'shell-environment'
 
+{dialog} = require('electron').remote
+
 class ScriptRunner
   commandMap: [
     {scope: '^source\\.coffee', command: 'coffee'}
@@ -95,10 +97,28 @@ class ScriptRunner
     return unless editor?
     
     path = editor.getPath()
+    
+    unless path?
+      # Request the user to save the script before running, we can't pipe the unsaved buffer
+      # into the interpreter because that would take away our ability to send user input via
+      # stdin
+      path = dialog.showSaveDialog({
+        title: 'Save script before running.'
+        buttonLabel: 'Save and Run'
+        defaultPath: process.env.PWD
+      })
+      
+      # abort everything if the user hits cancel
+      return unless path?
+      
+      editor.saveAs(path)
+    
     cmd = @commandFor(editor)
     unless cmd?
       alert("Not sure how to run '#{path}' :/")
       return false
+    
+    cmd += ' ' + path
     
     runner = @createRunnerView(editor)
     @killProcess(runner, true)
@@ -125,7 +145,7 @@ class ScriptRunner
     firstLine = editor.lineTextForBufferRow(0)
     if firstLine.match('^#!')
       #console.log("firstLine", firstLine)
-      return firstLine.substr(2)
+      return firstLine.substr(2).trim()
     
     # Lookup using the command map:
     path = editor.getPath()

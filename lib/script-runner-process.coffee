@@ -36,13 +36,6 @@ class ScriptRunnerProcess
     if editor.getPath()
       editor.save()
       cwd = Path.dirname(editor.getPath())
-    
-    # If the editor refers to a buffer on disk which has not been modified, we can use it directly:
-    # if editor.getPath() and !editor.buffer.isModified()
-    #   args.push(editor.getPath())
-    #   appendBuffer = false
-    # else
-    #   appendBuffer = true
       
     # Reformat cmd string (Shellwords.join doesn't exist yet):
     cmd = args.join(' ')
@@ -53,17 +46,9 @@ class ScriptRunnerProcess
       cols: 80,
       cwd: cwd,
       env: env,
-      })
-    
-    # Update the status (*Shellwords.join doesn't exist yet):
-    @view.header('Running: ' + cmd + ' (pgid ' + @child.pid + ')')
-    
-    # Handle various events relating to the pseudo teletype device:
-    @view.onInputReady (inputText) =>
-      @child.write(inputText)
+    })
     
     @child.stdout.on 'data', (data) =>
-      console.log(data)
       if @view?
         lines = data.toString().split '\n'
         for line in lines
@@ -83,6 +68,13 @@ class ScriptRunnerProcess
           @view.footer('Exited with status ' + code + duration)
         
         @view.emitter.clear()
+    
+    # Update the status (*Shellwords.join doesn't exist yet):
+    @view.header('Running: ' + cmd + ' (pgid ' + @child.pid + ')')
+    
+    # Handle various events relating to the pseudo teletype device:
+    @view.onInputReady (inputText) =>
+      @child.write(inputText)
     
     startTime = new Date
     
