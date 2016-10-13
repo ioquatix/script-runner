@@ -22,7 +22,7 @@ class ScriptRunnerProcess
   stop: (signal = 'SIGINT') ->
     if @child
       console.log("Sending", signal, "to child", @child, "pid", @child.pid)
-      @child.kill(signal)
+      process.kill(-@child.pid, signal)
       if @view
         @view.append('<Sending ' + signal + '>', 'stdin')
   
