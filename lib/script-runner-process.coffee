@@ -44,14 +44,11 @@ class ScriptRunnerProcess
     else
       appendBuffer = true
     
-    # Reformat cmd string (Shellwords.join doesn't exist yet):
-    cmd = args.join(' ')
-    
     # Spawn the child process:
     @child = ChildPTY.spawn(args[0], args.slice(1), cwd: cwd, env: env)
     
     # Update the status (*Shellwords.join doesn't exist yet):
-    @view.header('Running: ' + cmd + ' (pid ' + @child.pid + ')')
+    @view.header('Running: ' + args.join(' ') + ' (pid ' + @child.pid + ')')
     
     # Handle various events relating to the child process:
     @child.pty.on 'data', (data) =>
