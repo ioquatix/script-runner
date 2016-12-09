@@ -62,7 +62,7 @@ class ScriptRunnerProcess
         
         @view.scrollToBottom()
     
-    @child.on 'end', (code, signal) =>
+    @child.on 'close', (code, signal) =>
       #console.log("process", args, "exit", code, signal)
       @child = null
       if @view
