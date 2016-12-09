@@ -58,7 +58,7 @@ class ScriptRunnerProcess
       if @view?
         lines = data.toString().split '\n'
         for line in lines
-          @view.append(line, 'stderr')
+          @view.append(line, 'stdout')
         
         @view.scrollToBottom()
     
