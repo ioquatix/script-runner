@@ -17,6 +17,7 @@
     "shellwords": "0.1.x",
     "atom-space-pen-views": "^2.0.3",
     "shell-environment": ">=0.2.0",
-    "xterm": "2.2.x"
+    "xterm": "2.2.x",
+    "child_pty": "3.0.x"
   }
 }
