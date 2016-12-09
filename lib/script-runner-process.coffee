@@ -1,5 +1,5 @@
 ChildProcess = require('child_process')
-ChildPTY = require('child_pty')
+PTY = require('pty.js')
 Path = require('path')
 Shellwords = require('shellwords')
 
@@ -45,13 +45,13 @@ class ScriptRunnerProcess
       appendBuffer = true
     
     # Spawn the child process:
-    @child = ChildPTY.spawn(args[0], args.slice(1), cwd: cwd, env: env)
+    @child = PTY.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: ['pipe', 'pty', 'pty'])
     
     # Update the status (*Shellwords.join doesn't exist yet):
     @view.header('Running: ' + args.join(' ') + ' (pid ' + @child.pid + ')')
     
     # Handle various events relating to the child process:
-    @child.pty.on 'data', (data) =>
+    @child.on 'data', (data) =>
       if @view?
         lines = data.toString().split '\n'
         for line in lines
@@ -76,5 +76,6 @@ class ScriptRunnerProcess
     # Could not supply file name:
     if appendBuffer
       @child.stdin.write(editor.getText())
+      @child.stdin.write("\n\x04")
     
-    @child.stdin.end()
+    @child.stdin.end();
