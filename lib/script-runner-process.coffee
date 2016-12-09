@@ -1,4 +1,5 @@
 ChildProcess = require('child_process')
+ChildPTY = require('child_pty')
 Path = require('path')
 Shellwords = require('shellwords')
 
@@ -46,17 +47,14 @@ class ScriptRunnerProcess
     # Reformat cmd string (Shellwords.join doesn't exist yet):
     cmd = args.join(' ')
     
-    # PTY emulation wrapper:
-    args.unshift(__dirname + "/script-wrapper.py")
-    
     # Spawn the child process:
-    @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, detached: true)
+    @child = ChildPTY.spawn(args[0], args.slice(1), cwd: cwd, env: env)
     
     # Update the status (*Shellwords.join doesn't exist yet):
-    @view.header('Running: ' + cmd + ' (pgid ' + @child.pid + ')')
+    @view.header('Running: ' + cmd + ' (pid ' + @child.pid + ')')
     
     # Handle various events relating to the child process:
-    @child.stderr.on 'data', (data) =>
+    @child.pty.on 'data', (data) =>
       if @view?
         lines = data.toString().split '\n'
         for line in lines
@@ -64,14 +62,7 @@ class ScriptRunnerProcess
         
         @view.scrollToBottom()
     
-    @child.stdout.on 'data', (data) =>
-      if @view?
-        lines = data.toString().split '\n'
-        for line in lines
-          @view.append(line, 'stdout')
-        @view.scrollToBottom()
-    
-    @child.on 'close', (code, signal) =>
+    @child.on 'end', (code, signal) =>
       #console.log("process", args, "exit", code, signal)
       @child = null
       if @view
