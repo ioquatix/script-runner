@@ -65,6 +65,7 @@ class ScriptRunnerView extends ScrollView
     if @linecount >= atom.config.get('script-runner.scrollbackDistance')
       # console.log 'removing'
       @_output.find(':first-child').remove()
+      @linecount = 0
 
     span = document.createElement('span')
     span.innerHTML = @convert.toHtml([text])
