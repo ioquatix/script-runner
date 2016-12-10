@@ -1,13 +1,13 @@
-{ScrollView} = require 'atom-space-pen-views'
-Convert = require('ansi-to-html')
+{$, View} = require 'atom-space-pen-views'
+XTerm = require('xterm')
+XTerm.loadAddon('fit')
 
 module.exports =
-class ScriptRunnerView extends ScrollView
+class ScriptRunnerView extends View
   atom.deserializers.add(this)
 
-  @deserialize: ({title, linecount, header, output, footer}) ->
+  @deserialize: ({title, header, output, footer}) ->
     view = new ScriptRunnerView(title)
-    view.linecount = linecount
     view._header.html(header)
     view._output.html(output)
     view._footer.html(footer)
@@ -17,25 +17,23 @@ class ScriptRunnerView extends ScrollView
     @div class: 'script-runner', tabindex: -1, =>
       @h1 'Script Runner'
       @div class: 'header'
-      @pre class: 'output'
+      @div class: 'output'
       @div class: 'footer'
 
   constructor: (title) ->
     super
-
+    
     atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
-
-    @convert = new Convert({escapeXML: true})
-    @linecount = 0
+    
     @_header = @find('.header')
     @_output = @find('.output')
     @_footer = @find('.footer')
+    
     @setTitle(title)
-
+  
   serialize: ->
     deserializer: 'ScriptRunnerView'
     title: @title
-    linecount: @linecount
     header: @_header.html()
     output: @_output.html()
     footer: @_footer.html()
@@ -55,23 +53,23 @@ class ScriptRunnerView extends ScrollView
     @attr('data-theme', theme)
 
   clear: ->
-    @linecount = 0
-    @_output.html('')
     @_header.html('')
+    
+    @xterm = new XTerm {
+      useStyle: no
+      screenKeys: no
+      rows: 40
+      cols: 80
+    }
+    
+    parent = @_output.get(0)
+    @xterm.open(parent)
+    @xterm.fit()
+    
     @_footer.html('')
 
   append: (text, className) ->
-    # console.log @_output.find('span:first-child')
-    if @linecount >= atom.config.get('script-runner.scrollbackDistance')
-      # console.log 'removing'
-      @_output.find(':first-child').remove()
-      @linecount = 0
-
-    span = document.createElement('span')
-    span.innerHTML = @convert.toHtml([text])
-    span.className = className || 'stdout'
-    @_output.append(span)
-    @linecount += 1
+    @xterm.write(text)
 
   header: (text) ->
     @_header.html(text)
