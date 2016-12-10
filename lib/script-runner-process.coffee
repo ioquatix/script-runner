@@ -26,26 +26,59 @@ class ScriptRunnerProcess
       if @view
         @view.append('<Sending ' + signal + '>', 'stdin')
   
-  execute: (cmd, env, editor) ->
+  resolvePath: (editor, callback) ->
+    if editor.getPath()
+      cwd = Path.dirname(editor.getPath())
+      
+      # Save the file if it has been modified:
+      editor.save()
+      
+      callback(editor.getPath(), cwd)
+      
+      return true
+    
+    # Otherwise it was not handled:
+    return false
+  
+  resolveSelection: (editor, callback) ->
     cwd = atom.project.path
     
-    # Split the incoming command so we can modify it
-    args = Shellwords.split(cmd)
+    selection = editor.getLastSelection()
     
-    # Save the file if it has been modified:
-    if editor.getPath()
-      editor.save()
-      cwd = Path.dirname(editor.getPath())
-    
-    # If the editor refers to a buffer on disk which has not been modified, we can use it directly:
-    if editor.getPath() and !editor.buffer.isModified()
-      args.push(editor.getPath())
-      appendBuffer = false
+    if selection? and !selection.isEmpty()
+      callback(selection.getText(), cwd)
+      return true
     else
-      appendBuffer = true
+      callback(editor.getText(), cwd)
+      return true
+  
+    # Otherwise it was not handled:
+    return false
+  
+  execute: (cmd, env, editor) ->
+    # Split the incoming command so we can modify it
+    args = Shellwords.split cmd
     
+    return true if @resolvePath editor, (path, cwd) =>
+      args.push path
+      @spawn args, cwd, env
+    
+    return true if @resolveSelection editor, (text, cwd) =>
+      @spawn args, cwd, env
+      
+      @child.stdin.write(text)
+      @child.stdin.write("\n\x04")
+      @child.stdin.end()
+    
+    @view.header("Don't know how to run" + cmd.join(' '))
+    return false
+  
+  spawn: (args, cwd, env, callback) ->
     # Spawn the child process:
+    console.log("ScriptRunner.spawn", args[0], args.slice(1), cwd, env)
+    
     @child = PTY.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: ['pipe', 'pty', 'pty'])
+    @startTime = new Date
     
     # Update the status (*Shellwords.join doesn't exist yet):
     @view.header('Running: ' + args.join(' ') + ' (pid ' + @child.pid + ')')
@@ -60,22 +93,13 @@ class ScriptRunnerProcess
         @view.scrollToBottom()
     
     @child.on 'close', (code, signal) =>
-      #console.log("process", args, "exit", code, signal)
       @child = null
+      @endTime = new Date
       if @view
-        duration = ' after ' + ((new Date - startTime) / 1000) + ' seconds'
+        duration = ' after ' + ((@endTime - @startTime) / 1000) + ' seconds'
         if signal
           @view.footer('Exited with signal ' + signal + duration)
         else
           # Sometimes code seems to be null too, not sure why, perhaps a bug in node.
           code ||= 0
           @view.footer('Exited with status ' + code + duration)
-    
-    startTime = new Date
-    
-    # Could not supply file name:
-    if appendBuffer
-      @child.stdin.write(editor.getText())
-      @child.stdin.write("\n\x04")
-    
-    @child.stdin.end();
