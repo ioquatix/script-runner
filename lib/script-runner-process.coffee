@@ -65,9 +65,7 @@ class ScriptRunnerProcess
     
     return true if @resolveSelection editor, (text, cwd) =>
       @spawn args, cwd, env
-      
       @child.stdin.write(text)
-      @child.stdin.write("\n\x04")
       @child.stdin.end()
     
     @view.header("Don't know how to run" + cmd.join(' '))
@@ -77,14 +75,17 @@ class ScriptRunnerProcess
     # Spawn the child process:
     console.log("ScriptRunner.spawn", args[0], args.slice(1), cwd, env)
     
-    @child = PTY.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: ['pipe', 'pty', 'pty'])
+    @pty = PTY.open()
+    @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: ['pipe', @pty.slave, @pty.slave], detached: true)
+    # @pty.slave.end()
+    
     @startTime = new Date
     
     # Update the status (*Shellwords.join doesn't exist yet):
-    @view.header('Running: ' + args.join(' ') + ' (pid ' + @child.pid + ')')
+    @view.header('Running: ' + args.join(' ') + ' (pgid ' + @child.pid + ')')
     
     # Handle various events relating to the child process:
-    @child.on 'data', (data) =>
+    @pty.master.on 'data', (data) =>
       if @view?
         lines = data.toString().split '\n'
         for line in lines
@@ -92,8 +93,11 @@ class ScriptRunnerProcess
         
         @view.scrollToBottom()
     
-    @child.on 'close', (code, signal) =>
+    @child.on 'exit', (code, signal) =>
       @child = null
+      @pty.destroy()
+      
+      console.log('child', 'exit', code, signal)
       @endTime = new Date
       if @view
         duration = ' after ' + ((@endTime - @startTime) / 1000) + ' seconds'
