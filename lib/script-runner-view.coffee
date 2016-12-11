@@ -56,10 +56,14 @@ class ScriptRunnerView extends View
     @_header.html('')
     
     @xterm = new XTerm {
-      useStyle: no
-      screenKeys: no
       rows: 40
       cols: 80
+      scrollback: 1000,
+      useStyle: no
+      screenKeys: no
+      handler: (data) =>
+        console.log('xterm', 'data', data)
+      cursorBlink: yes
     }
     
     parent = @_output.get(0)
