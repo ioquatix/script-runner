@@ -1,6 +1,6 @@
 {$, View} = require 'atom-space-pen-views'
 {Emitter} = require 'atom'
-OnResize = require('element-resize-detector')();
+OnResize = require('element-resize-detector')(strategy: 'scroll');
 Terminal = require 'xterm'
 Terminal.loadAddon 'fit'
 
@@ -72,6 +72,10 @@ class ScriptRunnerView extends View
     if @term?
       @term.fit()
   
+  focus: ->
+    if @term?
+      @term.focus()
+  
   clear: ->
     @header.html('')
     @output.html('')
@@ -88,10 +92,13 @@ class ScriptRunnerView extends View
       cursorBlink: yes
     }
     
+    @term.on 'resize', (geometry) =>
+      @emitter.emit 'resize', geometry.cols, geometry.rows
+    
     parent = @output.get(0)
     @term.open(parent)
     @applyStyle()
-    @term.fit()
+    @outputResized()
   
   on: (event, callback) =>
     @emitter.on(event, callback)

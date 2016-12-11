@@ -2,6 +2,7 @@ ChildProcess = require('child_process')
 PTY = require('pty.js')
 Path = require('path')
 Shellwords = require('shellwords')
+TempWrite = require('temp-write')
 
 module.exports =
 class ScriptRunnerProcess
@@ -64,9 +65,8 @@ class ScriptRunnerProcess
       @spawn args, cwd, env
     
     return true if @resolveSelection editor, (text, cwd) =>
+      args.push TempWrite.sync(text)
       @spawn args, cwd, env
-      @child.stdin.write(text)
-      @child.stdin.end()
     
     @view.header("Don't know how to run" + cmd.join(' '))
     return false
@@ -88,6 +88,12 @@ class ScriptRunnerProcess
       console.log('data', data)
       if @pty?
         @pty.master.write(data)
+    
+    @view.on 'resize', (cols, rows) =>
+      if @pty?
+        @pty.resize(cols, rows)
+    
+    @view.focus()
     
     # Handle various events relating to the child process:
     @pty.master.on 'data', (data) =>
