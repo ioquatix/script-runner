@@ -76,34 +76,36 @@ class ScriptRunnerProcess
     console.log("ScriptRunner.spawn", args[0], args.slice(1), cwd, env)
     
     @pty = PTY.open()
-    @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: ['pipe', @pty.slave, @pty.slave], detached: true)
+    @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: [@pty.slave, @pty.slave, @pty.slave], detached: true)
     # @pty.slave.end()
     
     @startTime = new Date
     
     # Update the status (*Shellwords.join doesn't exist yet):
-    @view.header('Running: ' + args.join(' ') + ' (pgid ' + @child.pid + ')')
+    @view.setHeader('Running: ' + args.join(' ') + ' (pgid ' + @child.pid + ')')
+    
+    @view.on 'data', (data) =>
+      console.log('data', data)
+      if @pty?
+        @pty.master.write(data)
     
     # Handle various events relating to the child process:
     @pty.master.on 'data', (data) =>
       if @view?
-        lines = data.toString().split '\n'
-        for line in lines
-          @view.append(line, 'stdout')
-        
-        @view.scrollToBottom()
+        @view.append(data, 'stdout')
     
     @child.on 'exit', (code, signal) =>
       @child = null
       @pty.destroy()
+      @pty = null
       
       console.log('child', 'exit', code, signal)
       @endTime = new Date
       if @view
         duration = ' after ' + ((@endTime - @startTime) / 1000) + ' seconds'
         if signal
-          @view.footer('Exited with signal ' + signal + duration)
+          @view.setFooter('Exited with signal ' + signal + duration)
         else
           # Sometimes code seems to be null too, not sure why, perhaps a bug in node.
           code ||= 0
-          @view.footer('Exited with status ' + code + duration)
+          @view.setFooter('Exited with status ' + code + duration)

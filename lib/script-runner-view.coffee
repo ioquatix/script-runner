@@ -1,6 +1,8 @@
 {$, View} = require 'atom-space-pen-views'
-XTerm = require('xterm')
-XTerm.loadAddon('fit')
+{Emitter} = require 'atom'
+OnResize = require('element-resize-detector')();
+Terminal = require 'xterm'
+Terminal.loadAddon 'fit'
 
 module.exports =
 class ScriptRunnerView extends View
@@ -8,35 +10,35 @@ class ScriptRunnerView extends View
 
   @deserialize: ({title, header, output, footer}) ->
     view = new ScriptRunnerView(title)
-    view._header.html(header)
-    view._output.html(output)
-    view._footer.html(footer)
+    view.header.html(header)
+    view.output.html(output)
+    view.footer.html(footer)
     return view
 
   @content: ->
     @div class: 'script-runner', tabindex: -1, =>
       @h1 'Script Runner'
-      @div class: 'header'
-      @div class: 'output'
-      @div class: 'footer'
+      @div class: 'header', outlet: 'header'
+      @div class: 'output', outlet: 'output'
+      @div class: 'footer', outlet: 'footer'
 
   constructor: (title) ->
     super
     
+    @emitter = new Emitter
+    
     atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
     
-    @_header = @find('.header')
-    @_output = @find('.output')
-    @_footer = @find('.footer')
+    @resizeSensor = OnResize.listenTo this.get(0), => @outputResized()
     
     @setTitle(title)
   
   serialize: ->
     deserializer: 'ScriptRunnerView'
     title: @title
-    header: @_header.html()
-    output: @_output.html()
-    footer: @_footer.html()
+    header: @header.html()
+    output: @output.html()
+    footer: @footer.html()
 
   copyToClipboard: ->
     atom.clipboard.write(window.getSelection().toString())
@@ -52,31 +54,53 @@ class ScriptRunnerView extends View
     @theme = theme
     @attr('data-theme', theme)
 
+  applyStyle: ->
+    # remove background color in favor of the atom background
+    # @term.element.style.background = null
+    @term.element.style.fontFamily = (
+      # atom.config.get('editor.fontFamily') or
+      # (Atom doesn't return a default value if there is none)
+      # so we use a poor fallback
+      "monospace"
+    )
+    # Atom returns a default for fontSize
+    @term.element.style.fontSize = (
+      atom.config.get('editor.fontSize')
+    ) + "px"
+  
+  outputResized: ->
+    if @term?
+      @term.fit()
+  
   clear: ->
-    @_header.html('')
-    
-    @xterm = new XTerm {
+    @header.html('')
+    @output.html('')
+    @footer.html('')
+
+    @term = new Terminal {
       rows: 40
       cols: 80
       scrollback: 1000,
       useStyle: no
       screenKeys: no
       handler: (data) =>
-        console.log('xterm', 'data', data)
+        @emitter.emit('data', data)
       cursorBlink: yes
     }
     
-    parent = @_output.get(0)
-    @xterm.open(parent)
-    @xterm.fit()
-    
-    @_footer.html('')
-
+    parent = @output.get(0)
+    @term.open(parent)
+    @applyStyle()
+    @term.fit()
+  
+  on: (event, callback) =>
+    @emitter.on(event, callback)
+  
   append: (text, className) ->
-    @xterm.write(text)
-
-  header: (text) ->
-    @_header.html(text)
-
-  footer: (text) ->
-    @_footer.html(text)
+    @term.write(text)
+  
+  setHeader: (text) ->
+    @header.html(text)
+  
+  setFooter: (text) ->
+    @footer.html(text)
