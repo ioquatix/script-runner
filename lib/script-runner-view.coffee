@@ -53,7 +53,7 @@ class ScriptRunnerView extends View
   setTheme: (theme) ->
     @theme = theme
     @attr('data-theme', theme)
-
+  
   applyStyle: ->
     # remove background color in favor of the atom background
     # @term.element.style.background = null
@@ -80,11 +80,11 @@ class ScriptRunnerView extends View
     @header.html('')
     @output.html('')
     @footer.html('')
-
+    
     @term = new Terminal {
       rows: 40
       cols: 80
-      scrollback: 1000,
+      scrollback: atom.config.get('script-runner.scrollback'),
       useStyle: no
       screenKeys: no
       handler: (data) =>
