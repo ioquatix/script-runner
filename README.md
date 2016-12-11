@@ -4,13 +4,13 @@ This package will run various script files inside of Atom. It currently supports
 
 ![Example](https://github.com/ioquatix/script-runner/raw/master/resources/screenshot-1.png)
 
-This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`), correctly setting the environment (e.g. `RVM` supported out of the box) and proper (currently non-interactive) terminal emulation. Many thanks to Loren Segal and all the contributing developers.
+This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`), correctly setting the environment (e.g. `RVM` supported out of the box) and proper terminal emulation using [pty.js](https://github.com/chjj/pty.js/) and [xterm](https://github.com/sourcelair/xterm.js/). Many thanks to Loren Segal and all the contributing developers.
 
 ## Usage
 
 N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](https://github.com/ioquatix/script-runner/issues/1).
 
-| Command              | Mac OS X          | Linux/Windows    |
+| Command              | Mac OS X          | Linux            |
 |----------------------|-------------------|------------------|
 | Run: Script          | <kbd>ctrl-x</kbd> | <kbd>alt-x</kbd> |
 | Run: Terminate       | <kbd>ctrl-c</kbd> | <kbd>alt-c</kbd> |
@@ -21,9 +21,13 @@ The Run: Script command is used script-runner will check if there is already an 
 
 Closing a runner view will cause its process to terminate to avoid losing control over scripts executed with this plugin.
 
-### Pseudo TTY Emulation
+### Run Selection
 
-Most interpreters output to `stdout` and `stderr`, however the buffering mechanisms are often different when the process is not running on a PTY. For example, Ruby buffers `stdout` when not attached to a terminal which causes incorrect order of output when writing to both `stdout` and `stderr`. Additionally, most programs won't output control codes used for colouring the output when not running on a terminal. `script-runner` uses the `script` command to emulate a terminal and generally gives the best output.
+When invoking the above `Run: Script` command, if a portion of the script is selected, only that portion will be executed.
+
+### User Input
+
+When running a script, the focus will be passed to the script output terminal. You are welcome to use the keyboard and mouse to interact with the running program.
 
 ### Shebang Lines
 
@@ -42,12 +46,15 @@ Even for unsaved files without an associated grammar, as long as you have the co
 
 The default Atom process takes environment variables from the shell it was launched from. This might be an issue if launching Atom directly from the desktop environment when using, say, RVM which exports functionality for interactive terminal sessions.
 
-To ensure consistent behavior, when running a script, environment variables are extracted from the interactive login shell. This usually loads the same environment variables you'd expect when using the terminal.
+To ensure consistent behavior, when running a script, environment variables are extracted from the [interactive login shell](). This usually loads the same environment variables you'd expect when using the terminal.
+
+## Configuration
 
 ### Split Direction
 
 It is possible to configure which way to split the new pane. Open your Atom config file and edit `'script-runner'.splitDirection`, the possible
 values are: `'up'`, `'down'`, `'left'` and `'right'`. For example:
+
 ```cson
 "*":
   //...
@@ -55,11 +62,10 @@ values are: `'up'`, `'down'`, `'left'` and `'right'`. For example:
     `splitDirection`: `down`
 ```
 
-
 ### Scrollback Distance
 
-To limit the number of lines kept in the output window simply edit the `'script-runner'.scrollbackDistance` option in
-your Atom config file
+To limit the number of lines kept in the output window simply edit the `'script-runner'.scrollback` option in
+your Atom config file.
 
 ## Contributing
 
