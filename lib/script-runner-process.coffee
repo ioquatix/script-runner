@@ -3,6 +3,7 @@ PTY = require('pty.js')
 Path = require('path')
 Shellwords = require('shellwords')
 TempWrite = require('temp-write')
+Path = require('path');
 
 module.exports =
 class ScriptRunnerProcess
@@ -42,17 +43,17 @@ class ScriptRunnerProcess
     return false
   
   resolveSelection: (editor, callback) ->
-    cwd = atom.project.path
+    if editor.getPath()
+      cwd = Path.dirname(editor.getPath())
+    else
+      cwd = atom.project.path
     
     selection = editor.getLastSelection()
     
     if selection? and !selection.isEmpty()
       callback(selection.getText(), cwd)
       return true
-    else
-      callback(editor.getText(), cwd)
-      return true
-  
+    
     # Otherwise it was not handled:
     return false
   
@@ -60,16 +61,16 @@ class ScriptRunnerProcess
     # Split the incoming command so we can modify it
     args = Shellwords.split cmd
     
-    return true if @resolvePath editor, (path, cwd) =>
-      args.push path
-      @spawn args, cwd, env
-    
     return true if @resolveSelection editor, (text, cwd) =>
       args.push TempWrite.sync(text)
       @spawn args, cwd, env
     
-    @view.header("Don't know how to run" + cmd.join(' '))
-    return false
+    return true if @resolvePath editor, (path, cwd) =>
+      args.push path
+      @spawn args, cwd, env
+    
+    callback(editor.getText(), cwd)
+    return true
   
   spawn: (args, cwd, env, callback) ->
     # Spawn the child process:
