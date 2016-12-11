@@ -4,13 +4,15 @@
 // for a full listing of what's available.
 @import "ui-variables";
 
+@import (inline) "../node_modules/xterm/dist/xterm.css";
+
 .script-runner {
   //common to all themes
   padding: 0px 20px;
   padding-bottom: 20px;
   overflow-y: scroll;
 
-  pre {
+  .output {
     border: 1px solid;
     line-height: normal;
   }
@@ -23,7 +25,7 @@
 .script-runner[data-theme='light'] {
   background: #fff;
 
-  pre {
+  .output {
     background-color: #f0f0f0;
     border-color: #cccbba;
 
@@ -39,7 +41,7 @@
 .script-runner[data-theme='dark'] {
     background: #000;
 
-    pre {
+    .output {
       background-color: #000;
       border-color: #444566;
 
