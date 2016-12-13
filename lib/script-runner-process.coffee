@@ -57,6 +57,16 @@ class ScriptRunnerProcess
     # Otherwise it was not handled:
     return false
   
+  resolveBuffer: (editor, callback) ->
+    if editor.getPath()
+      cwd = Path.dirname(editor.getPath())
+    else
+      cwd = atom.project.path
+    
+    callback(editor.getText(), cwd)
+    
+    return true
+  
   execute: (cmd, env, editor) ->
     # Split the incoming command so we can modify it
     args = Shellwords.split cmd
@@ -69,8 +79,12 @@ class ScriptRunnerProcess
       args.push path
       @spawn args, cwd, env
     
-    callback(editor.getText(), cwd)
-    return true
+    return true if @resolveBuffer editor, (text, cwd) =>
+      args.push TempWrite.sync(text)
+      @spawn args, cwd, env
+    
+    # something really has to go wrong for this.
+    return false
   
   spawn: (args, cwd, env, callback) ->
     # Spawn the child process:
