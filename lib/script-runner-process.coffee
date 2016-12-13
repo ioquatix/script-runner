@@ -64,6 +64,8 @@ class ScriptRunnerProcess
       cwd = atom.project.path
     
     callback(editor.getText(), cwd)
+    
+    return true
   
   execute: (cmd, env, editor) ->
     # Split the incoming command so we can modify it
@@ -81,7 +83,8 @@ class ScriptRunnerProcess
       args.push TempWrite.sync(text)
       @spawn args, cwd, env
     
-    return true
+    # something really has to go wrong for this.
+    return false
   
   spawn: (args, cwd, env, callback) ->
     # Spawn the child process:
