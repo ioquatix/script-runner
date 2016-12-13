@@ -1,7 +1,7 @@
 {
   "name": "script-runner",
   "main": "./lib/script-runner",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Runs scripts inside of Atom, just like from a terminal.",
   "license": "MIT",
   "repository": {
