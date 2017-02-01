@@ -1,5 +1,6 @@
 ChildProcess = require('child_process')
-PTY = require('pty.js')
+PTY = require('node-pty')
+OS = require('os')
 Path = require('path')
 Shellwords = require('shellwords')
 TempWrite = require('temp-write')
