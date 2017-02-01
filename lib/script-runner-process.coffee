@@ -101,11 +101,12 @@ class ScriptRunnerProcess
     @view.setHeader('Running: ' + args.join(' ') + ' (pgid ' + @child.pid + ')')
     
     @view.on 'data', (data) =>
-      console.log('data', data)
+      #console.log('view -> pty (data)', data.length)
       if @pty?
         @pty.master.write(data)
     
     @view.on 'resize', (geometry) =>
+      #console.log('view -> pty (resize)', geometry)
       if @pty?
         @pty.resize(geometry.cols, geometry.rows)
     
@@ -113,15 +114,17 @@ class ScriptRunnerProcess
     
     # Handle various events relating to the child process:
     @pty.master.on 'data', (data) =>
+      #console.log('pty -> view (data)', data.length)
       if @view?
         @view.append(data, 'stdout')
     
     @child.on 'exit', (code, signal) =>
+      #console.log('pty (exit)', code, signal)
+
       @child = null
       @pty.destroy()
       @pty = null
       
-      console.log('child', 'exit', code, signal)
       @endTime = new Date
       if @view
         duration = ' after ' + ((@endTime - @startTime) / 1000) + ' seconds'
