@@ -105,9 +105,9 @@ class ScriptRunnerProcess
       if @pty?
         @pty.master.write(data)
     
-    @view.on 'resize', (cols, rows) =>
+    @view.on 'resize', (geometry) =>
       if @pty?
-        @pty.resize(cols, rows)
+        @pty.resize(geometry.cols, geometry.rows)
     
     @view.focus()
     
