@@ -21,6 +21,14 @@ The Run: Script command is used script-runner will check if there is already an 
 
 Closing a runner view will cause its process to terminate to avoid losing control over scripts executed with this plugin.
 
+### `node-gyp` failures
+
+If you get issues about loading node-pty, you might have a problem with your python install. `node-gyp` [doesn't work if `python` points to `python3`](https://github.com/nodejs/node-gyp/issues/1030). To fix this, tell `apm` to prefer python2.7
+
+	apm config set python $(which python2.7)
+
+Once you've done this, reinstall script-runner.
+
 ### Run Selection
 
 When invoking the above `Run: Script` command, if a portion of the script is selected, only that portion will be executed.
@@ -57,9 +65,9 @@ values are: `'up'`, `'down'`, `'left'` and `'right'`. For example:
 
 ```cson
 "*":
-  //...
-  'script-runner':
-    `splitDirection`: `down`
+	//...
+	'script-runner':
+		`splitDirection`: `down`
 ```
 
 ### Scrollback Distance
