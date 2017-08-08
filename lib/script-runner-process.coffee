@@ -34,9 +34,8 @@ class ScriptRunnerProcess
       cwd = Path.dirname(editor.getPath())
       
       # Save the file if it has been modified:
-      editor.save()
-      
-      callback(editor.getPath(), cwd)
+      Promise.resolve(editor.save()).then =>
+        callback(editor.getPath(), cwd)
       
       return true
     
