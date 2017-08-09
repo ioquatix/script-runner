@@ -105,7 +105,7 @@ class ScriptRunnerProcess
         @pty.master.write(data)
     
     @view.on 'resize', (geometry) =>
-      #console.log('view -> pty (resize)', geometry)
+      # console.log('view -> pty (resize)', geometry)
       if @pty?
         @pty.resize(geometry.cols, geometry.rows)
     
@@ -116,6 +116,9 @@ class ScriptRunnerProcess
       #console.log('pty -> view (data)', data.length)
       if @view?
         @view.append(data, 'stdout')
+    
+    @child.on 'error', (what) =>
+      console.log('pty (error)', what);
     
     @child.on 'exit', (code, signal) =>
       #console.log('pty (exit)', code, signal)
