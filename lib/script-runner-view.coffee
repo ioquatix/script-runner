@@ -8,28 +8,32 @@ module.exports =
 class ScriptRunnerView extends View
   atom.deserializers.add(this)
 
-  @deserialize: ({title, header, output, footer}) ->
+  @deserialize: ({title, header, output}) ->
+    console.log("view deserialize")
     view = new ScriptRunnerView(title)
     view.header.html(header)
     view.output.html(output)
-    view.footer.html(footer)
+    # view.footer.html(footer)
     return view
 
   @content: ->
+    console.log("view content")
     @div class: 'script-runner', tabindex: -1, =>
-      @h1 'Script Runner'
       @div class: 'header', outlet: 'header'
       @div class: 'output', outlet: 'output'
-      @div class: 'footer', outlet: 'footer'
-
+    
   constructor: (title) ->
+    console.log("view constructor")
+    
     super
+    
+    console.log("view constructor setup")
     
     @emitter = new Emitter
     
     atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
     
-    @resizeSensor = OnResize.listenTo this.get(0), => @outputResized()
+    @resizeSensor = OnResize.listenTo @get(0), => @outputResized()
     
     @setTitle(title)
   
@@ -38,7 +42,6 @@ class ScriptRunnerView extends View
     title: @title
     header: @header.html()
     output: @output.html()
-    footer: @footer.html()
 
   copyToClipboard: ->
     atom.clipboard.write(window.getSelection().toString())
@@ -48,7 +51,7 @@ class ScriptRunnerView extends View
 
   setTitle: (title) ->
     @title = title
-    @find('h1').html(@getTitle())
+    @find('.header').html(@getTitle())
 
   setTheme: (theme) ->
     @theme = theme
@@ -56,34 +59,40 @@ class ScriptRunnerView extends View
   
   applyStyle: ->
     # remove background color in favor of the atom background
-    # @term.element.style.background = null
-    @term.element.style.fontFamily = (
-      # atom.config.get('editor.fontFamily') or
+    # @terminal.element.style.background = null
+    @terminal.element.style.fontFamily = (
+      atom.config.get('editor.fontFamily') or
       # (Atom doesn't return a default value if there is none)
       # so we use a poor fallback
       "monospace"
     )
     # Atom returns a default for fontSize
-    @term.element.style.fontSize = (
+    @terminal.element.style.fontSize = (
       atom.config.get('editor.fontSize')
     ) + "px"
   
   outputResized: ->
-    if @term?
-      @term.fit()
+    console.log("view resized")
+    if @terminal?
+      @terminal.fit()
   
   focus: ->
-    if @term?
-      @term.focus()
+    console.log("view focus")
+    if @terminal?
+      @terminal.focus()
   
   clear: ->
+    console.log("view clear")
+    
+    if @terminal?
+      @terminal.destroy()
+    
     @header.html('')
     @output.html('')
-    @footer.html('')
     
-    @term = new Terminal {
+    @terminal = new Terminal {
       rows: 40
-      cols: 80
+      cols: 80 * 4
       scrollback: atom.config.get('script-runner.scrollback'),
       useStyle: no
       screenKeys: no
@@ -92,23 +101,23 @@ class ScriptRunnerView extends View
       cursorBlink: yes
     }
     
-    @term.on 'resize', (geometry) =>
-      console.log("@term.resize", geometry)
+    @terminal.on 'resize', (geometry) =>
+      console.log("@terminal.resize", geometry)
       @emitter.emit 'resize', geometry
     
-    parent = @output.get(0)
-    @term.open(parent)
+    @terminal.open(@output.get(0), true)
+    
     @applyStyle()
-    @outputResized()
+    @terminal.fit()
   
   on: (event, callback) =>
     @emitter.on(event, callback)
   
   append: (text, className) ->
-    @term.write(text)
+    @terminal.write(text)
   
   setHeader: (text) ->
-    @header.html(text)
+    # @header.html(text)
   
   setFooter: (text) ->
-    @footer.html(text)
+    # @footer.html(text)

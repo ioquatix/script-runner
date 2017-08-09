@@ -13,12 +13,12 @@
   },
   "homepage": "https://github.com/ioquatix/script-runner",
   "dependencies": {
-    "shellwords": "0.1.x",
-    "atom-space-pen-views": "^2.0.3",
+    "shellwords": ">=0.1.0",
+    "atom-space-pen-views": ">=2.2.0",
     "shell-environment": ">=0.2.0",
-    "xterm": "2.2.x",
-    "node-pty": "0.6.x",
-    "element-resize-detector": "1.1.9",
-    "temp-write": "2.1.x"
+    "xterm": ">=2.9.0",
+    "node-pty": ">=0.6.0",
+    "element-resize-detector": ">=1.1.12",
+    "temp-write": ">=2.1.0"
   }
 }
