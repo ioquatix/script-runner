@@ -18,7 +18,6 @@
     "shell-environment": ">=0.2.0",
     "xterm": ">=2.9.2",
     "node-pty": ">=0.6.0",
-    "element-resize-detector": ">=1.1.12",
     "temp-write": ">=2.1.0"
   }
 }

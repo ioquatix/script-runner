@@ -1,6 +1,5 @@
 {$, View} = require 'atom-space-pen-views'
 {Emitter} = require 'atom'
-OnResize = require('element-resize-detector')(strategy: 'scroll')
 Terminal = require 'xterm'
 Terminal.loadAddon 'fit'
 
@@ -33,7 +32,8 @@ class ScriptRunnerView extends View
     
     atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
     
-    @resizeSensor = OnResize.listenTo @get(0), => @outputResized()
+    @resizeObserver = new ResizeObserver => @outputResized()
+    @resizeObserver.observe @get(0)
     
     @setTitle(title)
   
