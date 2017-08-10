@@ -59,14 +59,15 @@ class ScriptRunnerView extends View
   applyStyle: ->
     # remove background color in favor of the atom background
     # @terminal.element.style.background = null
-    @terminal.element.style.fontFamily = (
+    @output.css 'font-family', (
       atom.config.get('editor.fontFamily') or
       # (Atom doesn't return a default value if there is none)
       # so we use a poor fallback
       "monospace"
     )
+    
     # Atom returns a default for fontSize
-    @terminal.element.style.fontSize = (
+    @output.css 'font-size', (
       atom.config.get('editor.fontSize')
     ) + "px"
   
