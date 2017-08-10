@@ -97,7 +97,7 @@ class ScriptRunnerProcess
     @startTime = new Date
     
     # Update the status (*Shellwords.join doesn't exist yet):
-    @view.log('Running: ' + args.join(' ') + ' (pgid ' + @child.pid + ')')
+    @view.log(args.join(' ') + ' (pgid ' + @child.pid + ')')
     
     @view.on 'data', (data) =>
       console.log('view -> pty (data)', data.length)
