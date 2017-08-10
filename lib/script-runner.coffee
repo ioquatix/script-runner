@@ -120,7 +120,7 @@ class ScriptRunner
     ShellEnvironment.loginEnvironment (error, environment) =>
       if environment
         cmd = environment['SHELL']
-        args = Shellwords.split cmd
+        args = Shellwords.split(cmd).concat("-l")
         
         runner.process = ScriptRunnerProcess.spawn(runner.view, args, path, environment)
       else
