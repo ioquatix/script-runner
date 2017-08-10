@@ -31,6 +31,7 @@ class ScriptRunnerView extends View
     @resizeObserver = new ResizeObserver => @outputResized()
     @resizeObserver.observe @get(0)
     
+    @applyStyle()
     @setTitle(title)
   
   serialize: ->
@@ -101,8 +102,6 @@ class ScriptRunnerView extends View
       @emitter.emit 'resize', geometry
     
     @terminal.open(@output.get(0), true)
-    
-    @applyStyle()
     @terminal.fit()
   
   on: (event, callback) =>
