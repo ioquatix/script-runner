@@ -92,7 +92,7 @@ class ScriptRunnerView extends View
     
     @terminal = new Terminal {
       rows: 40
-      cols: 80 * 4
+      cols: 80
       scrollback: atom.config.get('script-runner.scrollback'),
       useStyle: no
       screenKeys: no
