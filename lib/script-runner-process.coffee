@@ -120,8 +120,8 @@ class ScriptRunnerProcess
           process.kill(-@child.pid, 'SIGINT')
     
     @view.on 'resize', (geometry) =>
-      console.log('view -> pty (resize)', geometry)
       if @pty?
+        console.log('view -> pty (resize)', geometry)
         @pty.resize(geometry.cols, geometry.rows)
     
     @view.focus()
