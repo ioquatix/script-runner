@@ -8,20 +8,22 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.platform-darwin atom-text-editor':
-  'ctrl-x': 'run:script'
+  'ctrl-x': 'script-runner:run'
 
 '.platform-darwin atom-workspace':
-  'ctrl-c': 'run:terminate'
+  'ctrl-c': 'script-runner:terminate'
 
 '.platform-linux atom-text-editor':
-  'alt-x': 'run:script'
+  'alt-x': 'script-runner:run'
 
 '.platform-linux atom-workspace':
-  'alt-c': 'run:terminate'
+  'alt-c': 'script-runner:terminate'
 
-# Copy from script runner pane:
+# Copy/paste from script runner view:
 '.platform-darwin .script-runner':
-  'cmd-c': 'run:copy'
+  'cmd-c': 'script-runner:copy'
+  'cmd-v': 'script-runner:paste'
 
 '.platform-linux .script-runner':
-  'ctrl-c': 'run:copy'
+  'ctrl-c': 'script-runner:copy'
+  'ctrl-v': 'script-runner:paste'

@@ -24,7 +24,9 @@ class ScriptRunnerView extends View
     
     @emitter = new Emitter
     
-    atom.commands.add 'div.script-runner', 'run:copy', => @copyToClipboard()
+    atom.commands.add @element,
+      'script-runner:copy': => @copyToClipboard()
+      'script-runner:paste': => @pasteToTerminal()
     
     @resizeObserver = new ResizeObserver => @outputResized()
     @resizeObserver.observe @get(0)
@@ -38,7 +40,10 @@ class ScriptRunnerView extends View
     output: @output.html()
 
   copyToClipboard: ->
-    atom.clipboard.write(window.getSelection().toString())
+    atom.clipboard.write(@terminal.getSelection())
+
+  pasteToTerminal: ->
+    @emitter.emit('data', atom.clipboard.read())
 
   getTitle: ->
     "Script Runner: #{@title}"

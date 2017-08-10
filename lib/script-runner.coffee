@@ -47,8 +47,8 @@ class ScriptRunner
 
     # register commands
     atom.commands.add 'atom-workspace',
-      'run:script': (event) => @run(),
-      'run:terminate': (event) => @stop()
+      'script-runner:run': (event) => @run(),
+      'script-runner:terminate': (event) => @stop()
 
   killProcess: (runner, detach = false)->
     if runner?
