@@ -97,6 +97,8 @@ class ScriptRunnerProcess
     # Spawn the child process:
     console.log("spawn", args[0], args.slice(1), cwd, env)
     
+    env['TERM'] = 'xterm-256color'
+    
     @pty = PTY.open()
     @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: [@pty.slave, @pty.slave, @pty.slave], detached: true)
     # @pty.slave.end()
