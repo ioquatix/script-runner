@@ -111,11 +111,11 @@ class ScriptRunnerProcess
       if @pty?
         @pty.master.write(data)
     
-    # @view.on 'key', (event) =>
-    #   if @child?
-    #     if event.keyCode == 67 and event.ctrlKey
-    #       console.log('process.kill', -@child.pid, 'SIGINT')
-    #       process.kill(-@child.pid, 'SIGINT')
+    @view.on 'key', (event) =>
+      if @child?
+        if event.keyCode == 67 and event.ctrlKey
+          console.log('process.kill', -@child.pid, 'SIGINT')
+          process.kill(-@child.pid, 'SIGINT')
     
     @view.on 'resize', (geometry) =>
       console.log('view -> pty (resize)', geometry)
