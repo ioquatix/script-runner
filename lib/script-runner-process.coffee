@@ -27,7 +27,7 @@ class ScriptRunnerProcess
       console.log("Sending", signal, "to child", @child, "pid", @child.pid)
       process.kill(-@child.pid, signal)
       if @view
-        @view.append('<Sending ' + signal + '>', 'stdin')
+        @view.log('<Sending ' + signal + '>', 'stdin')
   
   resolvePath: (editor, callback) ->
     if editor.getPath()
@@ -88,7 +88,7 @@ class ScriptRunnerProcess
   
   spawn: (args, cwd, env, callback) ->
     # Spawn the child process:
-    console.log("ScriptRunner.spawn", args[0], args.slice(1), cwd, env)
+    console.log("spawn", args[0], args.slice(1), cwd, env)
     
     @pty = PTY.open()
     @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: [@pty.slave, @pty.slave, @pty.slave], detached: true)
@@ -97,15 +97,15 @@ class ScriptRunnerProcess
     @startTime = new Date
     
     # Update the status (*Shellwords.join doesn't exist yet):
-    @view.setHeader('Running: ' + args.join(' ') + ' (pgid ' + @child.pid + ')')
+    @view.log('Running: ' + args.join(' ') + ' (pgid ' + @child.pid + ')')
     
     @view.on 'data', (data) =>
-      #console.log('view -> pty (data)', data.length)
+      console.log('view -> pty (data)', data.length)
       if @pty?
         @pty.master.write(data)
     
     @view.on 'resize', (geometry) =>
-      # console.log('view -> pty (resize)', geometry)
+      console.log('view -> pty (resize)', geometry)
       if @pty?
         @pty.resize(geometry.cols, geometry.rows)
     
@@ -113,7 +113,7 @@ class ScriptRunnerProcess
     
     # Handle various events relating to the child process:
     @pty.master.on 'data', (data) =>
-      #console.log('pty -> view (data)', data.length)
+      console.log('pty -> view (data)', data.length)
       if @view?
         @view.append(data, 'stdout')
     
@@ -131,8 +131,8 @@ class ScriptRunnerProcess
       if @view
         duration = ' after ' + ((@endTime - @startTime) / 1000) + ' seconds'
         if signal
-          @view.setFooter('Exited with signal ' + signal + duration)
+          @view.log('Exited with signal ' + signal + duration)
         else
           # Sometimes code seems to be null too, not sure why, perhaps a bug in node.
           code ||= 0
-          @view.setFooter('Exited with status ' + code + duration)
+          @view.log('Exited with status ' + code + duration)

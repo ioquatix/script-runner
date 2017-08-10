@@ -8,7 +8,6 @@ class ScriptRunnerView extends View
   atom.deserializers.add(this)
 
   @deserialize: ({title, header, output}) ->
-    console.log("view deserialize")
     view = new ScriptRunnerView(title)
     view.header.html(header)
     view.output.html(output)
@@ -16,17 +15,12 @@ class ScriptRunnerView extends View
     return view
 
   @content: ->
-    console.log("view content")
     @div class: 'script-runner', tabindex: -1, =>
       @div class: 'header', outlet: 'header'
       @div class: 'output', outlet: 'output'
     
   constructor: (title) ->
-    console.log("view constructor")
-    
     super
-    
-    console.log("view constructor setup")
     
     @emitter = new Emitter
     
@@ -72,18 +66,14 @@ class ScriptRunnerView extends View
     ) + "px"
   
   outputResized: ->
-    console.log("view resized")
     if @terminal?
       @terminal.fit()
   
   focus: ->
-    console.log("view focus")
     if @terminal?
       @terminal.focus()
   
   clear: ->
-    console.log("view clear")
-    
     if @terminal?
       @terminal.destroy()
     
@@ -102,7 +92,6 @@ class ScriptRunnerView extends View
     }
     
     @terminal.on 'resize', (geometry) =>
-      console.log("@terminal.resize", geometry)
       @emitter.emit 'resize', geometry
     
     @terminal.open(@output.get(0), true)
@@ -116,8 +105,5 @@ class ScriptRunnerView extends View
   append: (text, className) ->
     @terminal.write(text)
   
-  setHeader: (text) ->
-    # @header.html(text)
-  
-  setFooter: (text) ->
-    # @footer.html(text)
+  log: (text) ->
+    @terminal.write(text + "\r\n")
