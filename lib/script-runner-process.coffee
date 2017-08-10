@@ -15,6 +15,13 @@ class ScriptRunnerProcess
     
     return scriptRunnerProcess
   
+  @spawn: (view, args, cwd, env) ->
+    scriptRunnerProcess = new ScriptRunnerProcess(view)
+    
+    scriptRunnerProcess.spawn(args, cwd, env)
+    
+    return scriptRunnerProcess
+  
   constructor: (view) ->
     @view = view
     @child = null
@@ -86,7 +93,7 @@ class ScriptRunnerProcess
     # something really has to go wrong for this.
     return false
   
-  spawn: (args, cwd, env, callback) ->
+  spawn: (args, cwd, env) ->
     # Spawn the child process:
     console.log("spawn", args[0], args.slice(1), cwd, env)
     
@@ -103,6 +110,12 @@ class ScriptRunnerProcess
       console.log('view -> pty (data)', data.length)
       if @pty?
         @pty.master.write(data)
+    
+    # @view.on 'key', (event) =>
+    #   if @child?
+    #     if event.keyCode == 67 and event.ctrlKey
+    #       console.log('process.kill', -@child.pid, 'SIGINT')
+    #       process.kill(-@child.pid, 'SIGINT')
     
     @view.on 'resize', (geometry) =>
       console.log('view -> pty (resize)', geometry)

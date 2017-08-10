@@ -93,13 +93,17 @@ class ScriptRunnerView extends View
       scrollback: atom.config.get('script-runner.scrollback'),
       useStyle: no
       screenKeys: no
-      handler: (data) =>
-        @emitter.emit('data', data)
       cursorBlink: yes
     }
     
     @terminal.on 'resize', (geometry) =>
-      @emitter.emit 'resize', geometry
+      @emitter.emit('resize', geometry)
+    
+    @terminal.on 'data', (data) =>
+      @emitter.emit('data', data)
+    
+    @terminal.on 'key', (key, event) =>
+      @emitter.emit('key', event)
     
     @terminal.open(@output.get(0), true)
     @terminal.fit()

@@ -6,6 +6,9 @@ ScriptRunnerView = require './script-runner-view'
 ChildProcess = require 'child_process'
 ShellEnvironment = require 'shell-environment'
 
+Path = require 'path'
+Shellwords = require 'shellwords'
+
 class ScriptRunner
   commandMap: [
     {scope: '^source\\.coffee', command: 'coffee'}
@@ -47,8 +50,9 @@ class ScriptRunner
 
     # register commands
     atom.commands.add 'atom-workspace',
-      'script-runner:run': (event) => @run(),
+      'script-runner:run': (event) => @run()
       'script-runner:terminate': (event) => @stop()
+      'script-runner:shell': (event) => @runShell()
 
   killProcess: (runner, detach = false)->
     if runner?
@@ -98,6 +102,29 @@ class ScriptRunner
 
     runner.view.setTheme(atom.config.get('script-runner.theme'))
     return runner
+
+  runShell: ->
+    editor = atom.workspace.getActiveTextEditor()
+    return unless editor?
+
+    path = Path.dirname(editor.getPath())
+
+    runner = @createRunnerView(editor)
+    @killProcess(runner, true)
+
+    @pane.activateItem(runner.view)
+
+    runner.view.clear()
+    runner.view.setTheme(atom.config.get('script-runner.theme'))
+
+    ShellEnvironment.loginEnvironment (error, environment) =>
+      if environment
+        cmd = environment['SHELL']
+        args = Shellwords.split cmd
+        
+        runner.process = ScriptRunnerProcess.spawn(runner.view, args, path, environment)
+      else
+        throw new Error error
 
   run: ->
     editor = atom.workspace.getActiveTextEditor()
