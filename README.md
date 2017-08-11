@@ -65,7 +65,7 @@ values are: `'bottom'`, `'left'` and `'right'`. For example:
 "*":
 	//...
 	'script-runner':
-		`splitDirection`: `down`
+		'splitDirection': 'bottom'
 ```
 
 ### Scrollback Distance
