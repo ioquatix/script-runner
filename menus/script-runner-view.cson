@@ -1,5 +1,5 @@
 'context-menu':
-  '.script-runner': [
+  'script-runner-view': [
     {label: 'Terminate', command: 'script-runner:terminate'}
     {type: 'separator'}
     {label: 'Copy', command: 'script-runner:copy'}

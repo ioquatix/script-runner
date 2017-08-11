@@ -20,10 +20,10 @@
   'alt-c': 'script-runner:terminate'
 
 # Copy/paste from script runner view:
-'.platform-darwin .script-runner':
+'.platform-darwin script-runner-view':
   'cmd-c': 'script-runner:copy'
   'cmd-v': 'script-runner:paste'
 
-'.platform-linux .script-runner':
+'.platform-linux script-runner-view':
   'ctrl-c': 'script-runner:copy'
   'ctrl-v': 'script-runner:paste'
