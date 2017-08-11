@@ -100,6 +100,10 @@ class ScriptRunnerProcess
     env['TERM'] = 'xterm-256color'
     
     @pty = PTY.open()
+    
+    if @view?
+      @pty.resize(@view.terminal.cols, @view.terminal.rows)
+    
     @child = ChildProcess.spawn(args[0], args.slice(1), cwd: cwd, env: env, stdio: [@pty.slave, @pty.slave, @pty.slave], detached: true)
     # @pty.slave.end()
     
