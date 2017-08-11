@@ -1,8 +1,11 @@
 'context-menu':
   'script-runner-view': [
+    {label: 'Interrupt', command: 'script-runner:interrupt'}
     {label: 'Terminate', command: 'script-runner:terminate'}
+    {label: 'Kill', command: 'script-runner:kill'}
     {type: 'separator'}
     {label: 'Copy', command: 'script-runner:copy'}
     {label: 'Paste', command: 'script-runner:paste'}
+    {label: 'Clear', command: 'script-runner:clear'}
     {type: 'separator'}
   ]
