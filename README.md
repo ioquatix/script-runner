@@ -1,10 +1,8 @@
 # Script Runner
 
-This package will run various script files inside of Atom. It currently supports JavaScript, CoffeeScript, Ruby, Python, Bash, Go and anything with a shebang line.
+This package will run various script files inside of Atom, and uses a proper terminal for output. It currently supports JavaScript, CoffeeScript, Ruby, Python, Bash, Go and anything with a shebang line.
 
 ![Demo](https://github.com/ioquatix/script-runner/raw/master/resources/demo.gif)
-
-This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`), correctly setting the environment (e.g. `RVM` supported out of the box) and proper terminal emulation using [pty.js](https://github.com/chjj/pty.js/) and [xterm](https://github.com/sourcelair/xterm.js/). Many thanks to Loren Segal and all the contributing developers.
 
 ## Usage
 
@@ -12,14 +10,14 @@ N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](h
 
 | Command              | Mac OS X          | Linux            |
 |----------------------|-------------------|------------------|
-| Run: Script          | <kbd>ctrl-x</kbd> | <kbd>alt-x</kbd> |
-| Run: Terminate       | <kbd>ctrl-c</kbd> | <kbd>alt-c</kbd> |
+| Script Runner: Run   | <kbd>ctrl-x</kbd> | <kbd>alt-x</kbd> |
+| Script Runner: Shell |                   |                  |
 
-Scripts which have been saved run in their directory, unsaved scripts run in the workspace root directory.
+Scripts which have been saved run in their directory, unsaved scripts run in the workspace root directory. Selecting a single line will only run that one line.
 
-The Run: Script command is used script-runner will check if there is already an output view dedicated to the script in the text editor in focus. If there isn't one a new one will be created otherwise it will clear the already existing one and reuse it.
+A right-click context menu can be used to send signals to the running process, and as you may expect, you can interact directly with the terminal, typing input, pressing `Ctrl-C`, and so on.
 
-Closing a runner view will cause its process to terminate to avoid losing control over scripts executed with this plugin.
+Closing a terminal will cause its process to be killed.
 
 ### `node-gyp` failures
 
@@ -61,7 +59,7 @@ To ensure consistent behavior, when running a script, environment variables are 
 ### Split Direction
 
 It is possible to configure which way to split the new pane. Open your Atom config file and edit `'script-runner'.splitDirection`, the possible
-values are: `'up'`, `'down'`, `'left'` and `'right'`. For example:
+values are: `'bottom'`, `'left'` and `'right'`. For example:
 
 ```cson
 "*":
