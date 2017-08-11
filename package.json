@@ -18,6 +18,7 @@
     "shell-environment": ">=0.3.0",
     "xterm": ">=2.9.2",
     "node-pty": ">=0.6.0",
-    "temp-write": ">=2.1.0"
+    "temp-write": ">=2.1.0",
+    "resize-observer-polyfill": ">=1.4.2"
   }
 }
