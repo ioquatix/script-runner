@@ -6,57 +6,31 @@
 
 @import (inline) "../node_modules/xterm/dist/xterm.css";
 
-.script-runner {
-  position: relative;
-  
-  //common to all themes
-  .output {
-    position: absolute;
-    
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    
-    padding: 1px;
-    line-height: normal;
-    
-    overflow: hidden;
-  }
-
-  .footer, .header {
-    margin: 8px 10px;
-  }
+script-runner-view {
+	position: relative;
+	
+	padding: 1px;
+	line-height: normal;
+	
+	overflow: hidden;
 }
 
-.script-runner[data-theme='light'] {
-  background: #fff;
+script-runner-view[data-theme='light'] {
+	background: #fff;
 
-  .output {
-    background-color: #f0f0f0;
-    border-color: #cccbba;
+	background-color: #f0f0f0;
+	border-color: #cccbba;
 
-    .stdout { color: black; }
-    .stderr { color: red; }
-  }
-
-  .footer, .header {
-    color: #333;
-  }
+	.stdout { color: black; }
+	.stderr { color: red; }
 }
 
-.script-runner[data-theme='dark'] {
-    background: #000;
+script-runner-view[data-theme='dark'] {
+	background: #000;
 
-    .output {
-      background-color: #000;
-      border-color: #444566;
+	background-color: #000;
+	border-color: #444566;
 
-      .stdout { color: white; }
-      .stderr { color: red; }
-    }
-
-    .footer, .header {
-      color: #DDD;
-    }
+	.stdout { color: white; }
+	.stderr { color: red; }
 }

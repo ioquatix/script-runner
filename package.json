@@ -14,7 +14,7 @@
   "homepage": "https://github.com/ioquatix/script-runner",
   "dependencies": {
     "shellwords": ">=0.1.0",
-    "atom-space-pen-views": ">=2.2.0",
+    "etch": ">=0.12.4",
     "shell-environment": ">=0.2.0",
     "xterm": ">=2.9.2",
     "node-pty": ">=0.6.0",
