@@ -2,8 +2,7 @@
   "name": "script-runner",
   "main": "./lib/script-runner",
   "version": "2.2.0",
-  "description": "Run script files inside of Atom, including shells. Runs within
-  a proper terminal which handles both input and output.",
+  "description": "Run script files inside of Atom, including shells. Runs within a proper terminal which handles both input and output.",
   "license": "MIT",
   "repository": {
     "type": "git",
