@@ -15,7 +15,7 @@ N.B. these keyboard shortcuts are currently being reviewed, [input is welcome](h
 
 Scripts which have been saved run in their directory, unsaved scripts run in the workspace root directory. Selecting a single line will only run that one line.
 
-A right-click context menu can be used to send signals to the running process, and as you may expect, you can interact directly with the terminal, typing input, pressing `Ctrl-C`, and so on.
+A right-click context menu can be used to send signals to the running process, and as you may expect, you can interact directly with the terminal, typing input, pressing <kbd>ctrl-c</kbd>, and so on.
 
 Closing a terminal will cause its process to be killed.
 
