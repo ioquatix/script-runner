@@ -10,14 +10,8 @@
 '.platform-darwin atom-text-editor':
   'ctrl-x': 'script-runner:run'
 
-'.platform-darwin atom-workspace':
-  'ctrl-c': 'script-runner:terminate'
-
 '.platform-linux atom-text-editor':
   'alt-x': 'script-runner:run'
-
-'.platform-linux atom-workspace':
-  'alt-c': 'script-runner:terminate'
 
 # Copy/paste from script runner view:
 '.platform-darwin script-runner-view':
@@ -25,5 +19,5 @@
   'cmd-v': 'script-runner:paste'
 
 '.platform-linux script-runner-view':
-  'ctrl-c': 'script-runner:copy'
-  'ctrl-v': 'script-runner:paste'
+  'ctrl-shift-c': 'script-runner:copy'
+  'ctrl-shift-v': 'script-runner:paste'
