@@ -2,7 +2,7 @@
 
 This package will run various script files inside of Atom. It currently supports JavaScript, CoffeeScript, Ruby, Python, Bash, Go and anything with a shebang line.
 
-![Example](https://github.com/ioquatix/script-runner/raw/master/resources/screenshot-1.png)
+![Demo](https://github.com/ioquatix/script-runner/raw/master/resources/demo.gif)
 
 This package is a fork of the popular `atom-runner` but with many PRs merged and other issues fixed. It includes support for shebang lines (`#!`), correctly setting the environment (e.g. `RVM` supported out of the box) and proper terminal emulation using [pty.js](https://github.com/chjj/pty.js/) and [xterm](https://github.com/sourcelair/xterm.js/). Many thanks to Loren Segal and all the contributing developers.
 
