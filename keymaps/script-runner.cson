@@ -21,3 +21,4 @@
 '.platform-linux script-runner-view':
   'ctrl-shift-c': 'script-runner:copy'
   'ctrl-shift-v': 'script-runner:paste'
+  'escape': 'script-runner:kill'
