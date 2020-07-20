@@ -17,7 +17,7 @@
     "etch": "^0.12.0",
     "shell-environment": "^0.3.0",
     "xterm": "^3.3",
-    "node-pty": "^0.8.1",
+    "node-pty": "^0.9.0",
     "temp-write": "^3.4",
     "resize-observer-polyfill": "^1.4"
   }
