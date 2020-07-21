@@ -19,14 +19,6 @@ A right-click context menu can be used to send signals to the running process, a
 
 Closing a terminal will cause its process to be killed.
 
-### `node-gyp` failures
-
-If you get issues about loading node-pty, you might have a problem with your python install. `node-gyp` [doesn't work if `python` points to `python3`](https://github.com/nodejs/node-gyp/issues/1030). To fix this, tell `apm` to prefer python2.7
-
-	apm config set python $(which python2.7)
-
-Once you've done this, reinstall script-runner.
-
 ### Run Selection
 
 When invoking the above `Run: Script` command, if a portion of the script is selected, only that portion will be executed.
