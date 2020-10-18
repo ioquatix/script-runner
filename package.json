@@ -1,7 +1,7 @@
 {
   "name": "script-runner",
   "main": "./lib/script-runner",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Run scripts and shells within a proper terminal.",
   "license": "MIT",
   "repository": {
