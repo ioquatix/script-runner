@@ -1,7 +1,6 @@
 {
   "name": "script-runner",
   "main": "index.js",
-  "type": "module",
   "version": "2.6.0",
   "description": "Run scripts and shells within a proper terminal.",
   "license": "MIT",
@@ -21,6 +20,7 @@
     "shellwords": "^0.1.0",
     "temp-write": "^5.0",
     "xterm": "^4.13",
-    "xterm-addon-fit": "^0.5.0"
+    "xterm-addon-fit": "^0.5.0",
+    "esm": "^3.2.25"
   }
 }
